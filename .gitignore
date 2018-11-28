@@ -1,0 +1,6 @@
+# IntelliJ project configuration
+*.idea/
+*.iml
+
+# Targets
+out/
