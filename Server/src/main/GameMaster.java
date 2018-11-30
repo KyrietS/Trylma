@@ -4,17 +4,18 @@ public class GameMaster
 {
     public Board board;
     private MovementStrategy movementStrategy;
+    private BoardFactory boardFactory;
 
-    public GameMaster(MovementStrategy ms)
+    public GameMaster(MovementStrategy ms, BoardFactory bf)
     {
-        board = new Board();
+        board = new ClassicBoard();
         movementStrategy = ms;
+        boardFactory = bf;
     }
 
-    void initializeBoardWith(String color)
+    void initializeBoard(String[] colors)
     {
-        //TODO implement
-
+        board = boardFactory.createBoard(colors);
     }
 
     //weryfikuje poprawność ruchu z pola (x1,y1) na pole (x2,y2) na podstawie podanych zasad movementstrategy
