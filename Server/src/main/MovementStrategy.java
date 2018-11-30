@@ -1,0 +1,8 @@
+package main;
+
+public interface MovementStrategy
+{
+    boolean verifyMove(Board board, int x1, int y1, int x2, int y2);
+
+    Board makeMove(Board board, int x1, int y1, int x2, int y2);
+}
