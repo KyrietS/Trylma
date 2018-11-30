@@ -7,9 +7,17 @@ public class Field
     private String targetColor;
     private boolean playable;
 
-    public Field()
+    public Field(boolean playable)
     {
-        //czy potrzebny konstruktor?
+
+    }
+
+    public Field(String currentColor, String nativeColor, String targetColor, boolean playable)
+    {
+        this.currentColor = currentColor;
+        this.nativeColor = nativeColor;
+        this.targetColor = targetColor;
+        this.playable = playable;
     }
 
     public String getCurrentColor()

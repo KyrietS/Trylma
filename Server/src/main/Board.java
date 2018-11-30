@@ -1,13 +1,12 @@
 package main;
 
-public class Board
+public abstract class Board
 {
-    private Field[][] fields;
+    protected Field[][] fields;
 
     Board()
     {
-        fields = new Field[13][17];
-        //TODO inicjalizacja pól
+
     }
 
     //Dodaje pionek(ustawia kolor) o podanym kolorze na pole (x,y)
@@ -65,4 +64,8 @@ public class Board
         return "board";
     }
 
+    public Field[][] getFields()
+    {
+        return fields;
+    }
 }
