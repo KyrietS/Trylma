@@ -58,11 +58,8 @@ public abstract class Board
     }
 
     //Zwraca board w postaci stringa
-    String getAsString()
-    {
-        //TODO implement
-        return "board";
-    }
+    public abstract String getAsString();
+
 
     public Field[][] getFields()
     {
