@@ -11,7 +11,7 @@ public class ClassicBoard extends Board
         {
             for (int j = 0; j < 17; j++)
             {
-                fields[i][j] = new Field(true); //chwilowo wszystkie true
+                fields[i][j] = new Field(false);
             }
         }
     }
