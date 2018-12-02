@@ -16,7 +16,7 @@ public abstract class Player
 
     abstract void sendCommand(String command);
 
-    abstract String readResponse();
+    abstract String readResponse() throws Exception;
 
     public String getColor()
     {

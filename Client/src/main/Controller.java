@@ -17,6 +17,7 @@ public class Controller
 
 
     private List<Field> fields = new ArrayList<>();
+    private CommunicationManager communicationManager;
 
     /**
      * Funkcja uruchamiana przy starcie aplikacji
@@ -25,6 +26,18 @@ public class Controller
     private void initialize()
     {
         loadFields();
+
+        try
+        {
+            System.out.println("Podłączanie do serwera...");
+            communicationManager = new CommunicationManager( "localhost", 4444 );
+        }
+        catch( Exception e )
+        {
+            System.out.println( "Błąd: " + e.getMessage() );
+        }
+        if( communicationManager != null )
+            System.out.println("Połączono z serwerem");
     }
 
     /**
@@ -85,6 +98,8 @@ public class Controller
         // TODO Obsługa kliknięć w pole. Tymczasowo jest zmieniane wypełnienie przy kliknięciu.
 
         System.out.println( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
+        if( communicationManager != null )
+            communicationManager.writeLine( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
 
         if( field.isSelected() )
             field.setSelected( false );
