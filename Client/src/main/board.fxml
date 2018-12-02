@@ -208,7 +208,7 @@
         <Circle fill="WHITE" layoutX="400.0" layoutY="670.0" radius="24.0" stroke="RED" strokeType="INSIDE" strokeWidth="6.0" />
         <Circle fill="WHITE" layoutX="452.0" layoutY="670.0" radius="24.0" stroke="RED" strokeType="INSIDE" strokeWidth="6.0" />
         <Circle disable="true" fill="#ffffff00" layoutX="504.0" layoutY="670.0" radius="24.0" stroke="#00000080" strokeType="INSIDE" />
-        <Circle fill="#ffffff00" layoutX="556.0" layoutY="670.0" radius="24.0" stroke="#00000080" strokeType="INSIDE" />
+        <Circle disable="true" fill="#ffffff00" layoutX="556.0" layoutY="670.0" radius="24.0" stroke="#00000080" strokeType="INSIDE" />
         <Circle disable="true" fill="#ffffff00" layoutX="608.0" layoutY="670.0" radius="24.0" stroke="#00000080" strokeType="INSIDE" />
         <Circle disable="true" fill="#ffffff00" layoutX="660.0" layoutY="670.0" radius="24.0" stroke="#00000080" strokeType="INSIDE" />
         <Circle disable="true" fill="#ffffff00" layoutX="712.0" layoutY="670.0" radius="24.0" stroke="#00000080" strokeType="INSIDE" />
