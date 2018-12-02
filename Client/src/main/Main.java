@@ -11,8 +11,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource( "board.fxml" ));
-        primaryStage.setTitle("Klient wita świat!");
-        primaryStage.setScene(new Scene(root, 600, 400));
+        primaryStage.setTitle("Trylma - chińskie warcaby");
+        primaryStage.setResizable( false );
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
