@@ -6,7 +6,7 @@ public class RealPlayer extends Player
 {
     protected CommunicationManager communicationManager;
 
-    RealPlayer(Socket socket, String color)
+    RealPlayer(Socket socket, String color) throws Exception
     {
         this.color = color;
         communicationManager = new CommunicationManager(socket);
@@ -15,13 +15,12 @@ public class RealPlayer extends Player
     @Override
     void sendCommand(String command)
     {
-        //TODO implement
+        communicationManager.writeLine( command );
     }
 
     @Override
-    String readResponse()
+    String readResponse() throws Exception
     {
-        //TODO implement
-        return null;
+        return communicationManager.readLine();
     }
 }
