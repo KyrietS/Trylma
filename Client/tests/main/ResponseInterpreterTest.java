@@ -1,13 +1,13 @@
 package main;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ResponseInterpreterTest
+class ResponseInterpreterTest
 {
     @Test
-    public void getResponses_SingleWithoutParameters()
+    void getResponses_SingleWithoutParameters()
     {
         String testLine = "KOD\n";
         Response[] response = ResponseInterpreter.getResponses( testLine );
@@ -17,7 +17,7 @@ public class ResponseInterpreterTest
     }
 
     @Test
-    public void getResponses_SingleWithParameters()
+    void getResponses_SingleWithParameters()
     {
         String testLine = "KOD param1 X 123 -321";
         Response[] response = ResponseInterpreter.getResponses( testLine );
@@ -35,7 +35,7 @@ public class ResponseInterpreterTest
     }
 
     @Test
-    public void getResponses_ManyWithoutParameters()
+    void getResponses_ManyWithoutParameters()
     {
         String testLine = "KOD@A@CC";
         Response[] responses = ResponseInterpreter.getResponses( testLine );
@@ -48,7 +48,7 @@ public class ResponseInterpreterTest
     }
 
     @Test
-    public void getResponses_ManyWithParameters()
+    void getResponses_ManyWithParameters()
     {
         String testLine = "KOD A B 123@TEST@KOD 10";
         Response[] responses = ResponseInterpreter.getResponses( testLine );
