@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class Controller
         try
         {
             System.out.println("Podłączanie do serwera...");
-            communicationManager = new CommunicationManager( "localhost", 4444 );
+            //communicationManager = new CommunicationManager( "localhost", 4444 );
         }
         catch( Exception e )
         {
@@ -75,7 +76,7 @@ public class Controller
             }
         }
     }
-
+int counter = 0;
     /**
      * Obsługuje zdarzenie kliknięcia w pole (typu Circle)
      */
@@ -97,14 +98,22 @@ public class Controller
 
         // TODO Obsługa kliknięć w pole. Tymczasowo jest zmieniane wypełnienie przy kliknięciu.
 
+        if( counter < 5 )
+        {
+            field.setColor("V");
+            counter++;
+        }
+        else
+            field.setColor("");
+
         System.out.println( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
         if( communicationManager != null )
             communicationManager.writeLine( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
-
+/*
         if( field.isSelected() )
             field.setSelected( false );
         else
-            field.setSelected( true );
+            field.setSelected( true );*/
     }
 
     /**
@@ -114,7 +123,7 @@ public class Controller
     {
         for( Field field : fields )
         {
-            if( field.getCircle() == circle )
+            if( field.circleEquals( circle ) )
                 return field;
         }
 
