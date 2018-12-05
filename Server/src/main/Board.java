@@ -2,7 +2,8 @@ package main;
 
 public abstract class Board
 {
-    protected Field[][] fields;
+    int columns, rows;
+    Field[][] fields;
 
     Board()
     {
@@ -60,9 +61,28 @@ public abstract class Board
     //Zwraca board w postaci stringa
     public abstract String getAsString();
 
+    //Sprawdza czy wszyskie pionki danego koloru są już w swoim celu
+    public abstract boolean isWinner(String color);
 
-    public Field[][] getFields()
+    Field getField(int x, int y)
     {
-        return fields;
+        if (x < 1 || y < 1 || x > columns || y > rows)
+        {
+            return null;
+        } else
+        {
+            return fields[x][y];
+        }
+    }
+
+    void setField(int x, int y, Field f)
+    {
+        if (x < 1 || y < 1 || x > columns || y > rows)
+        {
+            throw new NullPointerException();
+        } else
+        {
+            fields[x][y] = f;
+        }
     }
 }

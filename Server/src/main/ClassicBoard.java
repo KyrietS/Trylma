@@ -3,17 +3,17 @@ package main;
 //klasyczny board - 6 ramienna gwiazda w której każde ramię ma 10 pól a wewnętrzny sześciokąt - 61 pól
 public class ClassicBoard extends Board
 {
-    private final int columns = 13;
-    private final int rows = 17;
-    public ClassicBoard()
+    ClassicBoard()
     {
+        columns = 13;
+        rows = 17;
         //wypełnienie boarda polami
-        fields = new Field[13][17];
-        for (int i = 0; i < columns; i++)
+        fields = new Field[columns + 1][rows + 1];
+        for (int i = 1; i <= columns; i++)
         {
-            for (int j = 0; j < rows; j++)
+            for (int j = 1; j <= rows; j++)
             {
-                fields[i][j] = new Field(false);
+                setField(i, j, new Field(false));
             }
         }
     }
@@ -25,9 +25,9 @@ public class ClassicBoard extends Board
     public String getAsString()
     {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < columns; i++)
+        for (int i = 1; i <= columns; i++)
         {
-            for (int j = 0; j < rows; j++)
+            for (int j = 1; j <= rows; j++)
             {
                 if (fields[i][j].isPlayable())
                 {
@@ -48,5 +48,23 @@ public class ClassicBoard extends Board
             }
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean isWinner(String color)
+    {
+        Field tempField;
+        for (int i = 1; i <= columns; i++)
+        {
+            for (int j = 1; j <= rows; j++)
+            {
+                tempField = fields[i][j];
+                if (tempField.isPlayable() && tempField.getCurrentColor().equals(color) && !tempField.getCurrentColor().equals(tempField.getTargetColor()))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
