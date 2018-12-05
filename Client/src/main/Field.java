@@ -1,6 +1,6 @@
 package main;
 
-import javafx.scene.paint.Paint;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 
 /**
@@ -11,6 +11,7 @@ class Field
     private int x;                      // Współrzędna X pola (kolumna)
     private int y;                      // Współrzędna Y pola (wiersz)
     private Circle circle;              // Referencja do odpowiadającego Circle w GUI
+    private String color = "";          // Kolor pionka na danym polu ("" oznacza pole puste)
     private boolean selected = false;   // Czy pole jest zaznaczone. (Zaznaczone pole wygląda inaczej)
 
     Field( int x, int y, Circle circle )
@@ -18,14 +19,6 @@ class Field
         this.x = x;
         this.y = y;
         this.circle = circle;
-    }
-
-    /**
-     * Zwraca referencję do Circle w GUI, która odpowiada temu polu
-     */
-    Circle getCircle()
-    {
-        return circle;
     }
 
     /** Zwraca współrzędną X pola */
@@ -41,11 +34,59 @@ class Field
     }
 
     /**
+     * Ustawia na polu pionka o kolorze 'color'
+     * Uwaga: color="" oznacza, że na polu nie stoi zaden pionek
+     */
+    void setColor( String color )
+    {
+        Stop[] stops = { new Stop(0, Color.WHITE), null };
+
+        switch( color )
+        {
+        case "":
+            circle.setFill( Color.WHITE );
+            return;
+        case "R":
+            stops[ 1 ] = new Stop( 1, Color.RED );
+            break;
+        case "G":
+            stops[ 1 ] = new Stop( 1, Color.GREEN );
+            break;
+        case "Y":
+            stops[ 1 ] = new Stop( 1, Color.YELLOW );
+            break;
+        case "B":
+            stops[ 1 ] = new Stop( 1, Color.BLUE );
+            break;
+        case "O":
+            stops[ 1 ] = new Stop( 1, Color.ORANGE );
+            break;
+        case "V":
+            stops[ 1 ] = new Stop( 1, Color.VIOLET );
+            break;
+        default:
+            throw new RuntimeException( "Podany kolor nie istnieje: '" + color + "'" );
+
+        }
+        this.color = color;
+        RadialGradient gradient = new RadialGradient( 0, 0,
+                0.5, 0.5, 0.5, true, CycleMethod.NO_CYCLE, stops );
+        circle.setFill( gradient );
+    }
+
+    String getColor()
+    {
+        return color;
+    }
+
+    /**
      * Oznacza pole jako zaznaczone lub nie,
      * zmieniając przy tym jego wygląd
      */
     void setSelected( boolean state )
     {
+        //TODO znaznaczenie pola zmienia ramkę
+        /*
         if( state )
         {
             selected = true;
@@ -56,11 +97,18 @@ class Field
             selected = false;
             circle.setFill( Paint.valueOf( "#ffffff" ) );
         }
+        */
     }
 
     /** Sprawdza czy pole jest obecnie zaznaczone */
     boolean isSelected()
     {
         return selected;
+    }
+
+    /** Porównuje referencję do FX'owego Cirlce */
+    boolean circleEquals( Circle circle )
+    {
+        return this.circle == circle;
     }
 }
