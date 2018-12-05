@@ -2,7 +2,7 @@ package main;
 
 public class GameMaster
 {
-    public Board board;
+    private Board board;
     private MovementStrategy movementStrategy;
     private BoardFactory boardFactory;
 
@@ -19,7 +19,7 @@ public class GameMaster
     }
 
     //weryfikuje poprawność ruchu z pola (x1,y1) na pole (x2,y2) na podstawie podanych zasad movementstrategy
-    boolean verifyMove(int x1, int y1, int x2, int y2)
+    int verifyMove(int x1, int y1, int x2, int y2)
     {
         return movementStrategy.verifyMove(board, x1, y1, x2, y2);
     }
@@ -27,7 +27,7 @@ public class GameMaster
     //wykonuje ruch pionkiem z pola (x1,y1) na pole (x2,y2) na podstawie podanych zasad movementstrategy
     void makeMove(int x1, int y1, int x2, int y2)
     {
-        if (verifyMove(x1, y1, x2, y2))
+        if (verifyMove(x1, y1, x2, y2) > 0)
         {
             board = movementStrategy.makeMove(board, x1, y1, x2, y2);
         }
@@ -45,11 +45,13 @@ public class GameMaster
         }
     }
 
-    // sprawdza czy gracz o podanym kolorze jest zwycięzcą
+    /*
+        sprawdza czy gracz o podanym kolorze jest zwycięzcą
+        implementacja funckji przeniesiona do boarda (żeby gamemaster nie musiał mieć wszystkich pól)
+     */
     boolean isWinner(String color)
     {
-        //TODO implement
-        return false;
+        return board.isWinner(color);
     }
 
     String getBoardAsString()

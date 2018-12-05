@@ -1,18 +1,18 @@
 package main;
 
-public class Field
+class Field
 {
     private String currentColor;
     private String nativeColor;
     private String targetColor;
     private boolean playable;
 
-    public Field(boolean playable)
+    Field(boolean playable)
     {
 
     }
 
-    public Field(String currentColor, String nativeColor, String targetColor, boolean playable)
+    Field(String currentColor, String nativeColor, String targetColor, boolean playable)
     {
         this.currentColor = currentColor;
         this.nativeColor = nativeColor;
@@ -20,7 +20,7 @@ public class Field
         this.playable = playable;
     }
 
-    public String getCurrentColor()
+    String getCurrentColor()
     {
         return currentColor;
     }
