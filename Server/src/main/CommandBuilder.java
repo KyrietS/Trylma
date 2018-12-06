@@ -1,27 +1,49 @@
 package main;
 
 //TODO implement
-public class CommandBuilder
+class CommandBuilder
 {
-    private String command;
+    private StringBuilder command;
+    private String[] possible = {"WELCOME", "START", "OK", "NOK", "YOU", "STOP", "END", "BOARD"};
+
 
     CommandBuilder()
     {
-        //TODO implement
+        command = new StringBuilder();
     }
 
-    void addComand(String code)
+    void addCommand(String code)
     {
-        //TODO implement
+        if (command.toString().isEmpty())
+        {
+            command.append(code);
+        } else
+        {
+            command.append("@");
+            command.append(code);
+        }
     }
 
     void addCommand(String code, String data)
     {
-        //TODO implement
+        if (command.toString().isEmpty())
+        {
+            command.append(code);
+            command.append(" ");
+            command.append(data);
+        } else
+        {
+            command.append("@");
+            command.append(code);
+            command.append(" ");
+            command.append(data);
+        }
+
     }
 
-    public String getCommand()
+
+    String getCommand()
     {
-        return command;
+        return command.toString();
     }
 }

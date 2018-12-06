@@ -1,6 +1,7 @@
 package main;
 
 import org.junit.jupiter.api.Test;
+import shared.IField;
 
 import static org.junit.jupiter.api.Assertions.*;
 

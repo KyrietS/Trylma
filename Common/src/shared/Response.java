@@ -1,4 +1,4 @@
-package main;
+package shared;
 
 public class Response
 {
@@ -6,7 +6,7 @@ public class Response
     private int[] numbers;
     private String[] words;
 
-    public Response( String code, int[] numbers, String[] words )
+    Response(String code, int[] numbers, String[] words)
     {
         this.code = code;
         this.numbers = numbers;

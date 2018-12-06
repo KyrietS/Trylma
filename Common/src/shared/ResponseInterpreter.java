@@ -1,4 +1,4 @@
-package main;
+package shared;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import static java.lang.Character.isDigit;
 
 public class ResponseInterpreter
 {
-    public static Response[] getResponses( String line )
+    public static Response[] getResponses(String line)
     {
         // usuwanie znaku nowej linii z końca (jeśli występuje)
         line = line.replace("\n","");
