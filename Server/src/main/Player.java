@@ -7,6 +7,7 @@ public abstract class Player
 
     Player()
     {
+
     }
 
     Player(String color)

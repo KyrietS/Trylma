@@ -11,7 +11,7 @@ class ClassicBoardTest
     void constructorTest()
     {
         ClassicBoard classicBoard = new ClassicBoard();
-        Field field = classicBoard.getField(5, 5);
+        IField field = classicBoard.getField(5, 5);
         assertFalse(field.isPlayable());
         assertNull(field.getCurrentColor());
         assertNull(field.getNativeColor());
