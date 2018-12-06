@@ -1,6 +1,7 @@
 package main;
 
 import org.junit.jupiter.api.Test;
+import shared.JumpStatusVerifyCondition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -11,49 +12,56 @@ class BasicMovementStrategyTest
     {
         Board b = createDummyBoard();
         BasicMovementStrategy ms = new BasicMovementStrategy();
+        JumpStatusVerifyCondition jumpStatusVerifyCondition = new JumpStatusVerifyCondition(0);
+        JumpStatusVerifyCondition[] conditions = {jumpStatusVerifyCondition};
 
         //niepoprawny ruch na to samo pole
-        assertEquals(0, ms.verifyMove(b, 1, 1, 1, 1));
+        assertEquals(0, ms.verifyMove(b, 1, 1, 1, 1, conditions));
         //niepoprawny ruch z pustego pola
-        assertEquals(0, ms.verifyMove(b, 1, 2, 2, 1));
+        assertEquals(0, ms.verifyMove(b, 1, 2, 2, 1, conditions));
         //niepoprawny ruch na niegrywalne pole
-        assertEquals(0, ms.verifyMove(b, 2, 2, 3, 2));
+        assertEquals(0, ms.verifyMove(b, 2, 2, 3, 2, conditions));
         //niepoprawny krótki ruch na zajęte pole
-        assertEquals(0, ms.verifyMove(b, 2, 2, 2, 3));
+        assertEquals(0, ms.verifyMove(b, 2, 2, 2, 3, conditions));
         //niepoprawny ruch na zbyt odległe pole
-        assertEquals(0, ms.verifyMove(b, 2, 2, 4, 4));
+        assertEquals(0, ms.verifyMove(b, 2, 2, 4, 4, conditions));
 
         //poprawny krótki ruch w dół
-        assertEquals(1, ms.verifyMove(b, 1, 1, 1, 2));
+        assertEquals(1, ms.verifyMove(b, 1, 1, 1, 2, conditions));
         //poprawny krótki ruch w prawo
-        assertEquals(1, ms.verifyMove(b, 1, 1, 2, 1));
+        assertEquals(1, ms.verifyMove(b, 1, 1, 2, 1, conditions));
 
         //poprawny przeskakujący ruch w lewo
-        assertEquals(2, ms.verifyMove(b, 5, 5, 3, 5));
+        assertEquals(2, ms.verifyMove(b, 5, 5, 3, 5, conditions));
         //poprawny przeskakujący ruch w prawo
-        assertEquals(2, ms.verifyMove(b, 5, 5, 7, 5));
+        assertEquals(2, ms.verifyMove(b, 5, 5, 7, 5, conditions));
 
         //poprawny przeskakujący ruch w lewo, w górę (rząd nieparzysty)
-        assertEquals(2, ms.verifyMove(b, 5, 5, 4, 3));
+        assertEquals(2, ms.verifyMove(b, 5, 5, 4, 3, conditions));
         //poprawny przeskakujący ruch w prawo, w górę (rząd nieparzysty)
-        assertEquals(2, ms.verifyMove(b, 5, 5, 6, 3));
+        assertEquals(2, ms.verifyMove(b, 5, 5, 6, 3, conditions));
         //poprawny przeskakujący ruch w lewo w dół (rząd nieparzysty)
-        assertEquals(2, ms.verifyMove(b, 5, 5, 4, 7));
+        assertEquals(2, ms.verifyMove(b, 5, 5, 4, 7, conditions));
         //poprawny przeskakujący ruch w prawo w dół (rząd nieparzysty)
-        assertEquals(2, ms.verifyMove(b, 5, 5, 6, 7));
+        assertEquals(2, ms.verifyMove(b, 5, 5, 6, 7, conditions));
 
         //poprawny przeskakujący ruch w lewo, w górę (rząd parzysty)
-        assertEquals(2, ms.verifyMove(b, 8, 8, 7, 6));
+        assertEquals(2, ms.verifyMove(b, 8, 8, 7, 6, conditions));
         //poprawny przeskakujący ruch w prawo, w górę (rząd parzysty)
-        assertEquals(2, ms.verifyMove(b, 8, 8, 9, 6));
+        assertEquals(2, ms.verifyMove(b, 8, 8, 9, 6, conditions));
         //poprawny przeskakujący ruch w lewo w dół (rząd parzysty)
-        assertEquals(2, ms.verifyMove(b, 8, 8, 7, 10));
+        assertEquals(2, ms.verifyMove(b, 8, 8, 7, 10, conditions));
         //poprawny przeskakujący ruch w prawo w dół (rząd parzysty)
-        assertEquals(2, ms.verifyMove(b, 8, 8, 9, 10));
+        assertEquals(2, ms.verifyMove(b, 8, 8, 9, 10, conditions));
 
         //niepoprawnych przeskakujący ruch - brak pionka miedzy polami
-        assertEquals(0, ms.verifyMove(b, 2, 2, 1, 1));
-        assertEquals(1, ms.verifyMove(b, 1, 1, 1, 2));
+        assertEquals(0, ms.verifyMove(b, 2, 2, 1, 1, conditions));
+        assertEquals(1, ms.verifyMove(b, 1, 1, 1, 2, conditions));
+
+        //niepoprawny krótki ruch - niespełnienoy JumpStatusCondition
+        conditions[0].setStatus(2);
+        assertEquals(0, ms.verifyMove(b, 1, 1, 1, 2, conditions));
+        assertEquals(0, ms.verifyMove(b, 1, 1, 2, 1, conditions));
 
 
     }

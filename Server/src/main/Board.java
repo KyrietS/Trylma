@@ -1,5 +1,8 @@
 package main;
 
+import shared.IBoard;
+import shared.IField;
+
 public abstract class Board implements IBoard
 
 {

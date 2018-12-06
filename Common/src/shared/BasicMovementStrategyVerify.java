@@ -1,9 +1,24 @@
-package main;
+package shared;
 
+/*
+    klasa obsługująca weryfikację ruchów dla BasicMovementStrategy
+
+ */
 public class BasicMovementStrategyVerify
 {
-    public int verifyMove(IBoard board, int x1, int y1, int x2, int y2)
+    /*
+        sprawdza czy ruch jest poprawny
+        zwraca 0 jeśli niepoprawny, 1 jeśli ruch pojedynczy, 2 jeśli ruch przesakujący (można wykonać kolejny ruch), -1 gdy wystąpił błąd
+        funkcja przystosowana do przyjęcia jednego JumpStatusVerifyCondition
+
+     */
+    public static int verifyMove(IBoard board, int x1, int y1, int x2, int y2, AdditionalVerifyCondition[] additionalVerifyConditions)
     {
+        //sprawdza listę dodatkowych warunków (musi być tylko 1)
+        if (additionalVerifyConditions.length != 1)
+        {
+            return -1;
+        }
         //zmienne pomocnicze
         int dx = x2 - x1;
         int dy = y2 - y1;
@@ -33,7 +48,7 @@ public class BasicMovementStrategyVerify
                     //Jeżeli odległość == 1 to pola są bezpośrednimi sąsiadami czyli wykonujemy ruch krótki
                     case 1:
                     {
-                        return 1;
+                        return additionalVerifyConditions[0].verify() ? 1 : 0;
                     }
                     //Jeżeli odległość == 2 to sprawdzamy ruch przeskakujący
                     case 2:
@@ -60,7 +75,7 @@ public class BasicMovementStrategyVerify
                     //Dla rzędów parzystych sprawdza x2==x1 i x2==x1+1
                     if (dx == 0 || dx == 1)
                     {
-                        return 1;
+                        return additionalVerifyConditions[0].verify() ? 1 : 0;
                     } else
                     {
                         return 0;
@@ -70,7 +85,7 @@ public class BasicMovementStrategyVerify
                     //Dla rzędów nieparzystych sprawdza x2==x1 i x2==x1-1
                     if (dx == 0 || dx == -1)
                     {
-                        return 1;
+                        return additionalVerifyConditions[0].verify() ? 1 : 0;
                     } else
                     {
                         return 0;
