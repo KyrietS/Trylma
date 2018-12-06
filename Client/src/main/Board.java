@@ -22,6 +22,15 @@ public class Board
         selectedField = field;
     }
 
+    void unselectSelected()
+    {
+        if( selectedField != null )
+        {
+            selectedField.setSelected( false );
+            selectedField = null;
+        }
+    }
+
     public void addPiece( int x, int y, String color )
     {
         Field field = getField( x, y );
