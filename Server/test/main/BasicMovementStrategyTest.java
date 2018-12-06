@@ -1,7 +1,9 @@
 package main;
 
 import org.junit.jupiter.api.Test;
+import shared.AdditionalVerifyCondition;
 import shared.JumpStatusVerifyCondition;
+import shared.PreviousPawnVerifyCondition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,7 +15,8 @@ class BasicMovementStrategyTest
         Board b = createDummyBoard();
         BasicMovementStrategy ms = new BasicMovementStrategy();
         JumpStatusVerifyCondition jumpStatusVerifyCondition = new JumpStatusVerifyCondition(0);
-        JumpStatusVerifyCondition[] conditions = {jumpStatusVerifyCondition};
+        PreviousPawnVerifyCondition previousPawnVerifyCondition = new PreviousPawnVerifyCondition();
+        AdditionalVerifyCondition[] conditions = {jumpStatusVerifyCondition, previousPawnVerifyCondition};
 
         //niepoprawny ruch na to samo pole
         assertEquals(0, ms.verifyMove(b, 1, 1, 1, 1, conditions));
@@ -59,9 +62,14 @@ class BasicMovementStrategyTest
         assertEquals(1, ms.verifyMove(b, 1, 1, 1, 2, conditions));
 
         //niepoprawny krótki ruch - niespełnienoy JumpStatusCondition
-        conditions[0].setStatus(2);
+        jumpStatusVerifyCondition.setStatus(2);
         assertEquals(0, ms.verifyMove(b, 1, 1, 1, 2, conditions));
         assertEquals(0, ms.verifyMove(b, 1, 1, 2, 1, conditions));
+
+        //niepoprawny krótki ruch - niespełniony PreviousPawnVerifyCondition
+        previousPawnVerifyCondition.setCurrentXY(3, 3);
+        previousPawnVerifyCondition.setPreviousXY(1, 1);
+        assertEquals(0, ms.verifyMove(b, 8, 8, 7, 10, conditions));
 
 
     }

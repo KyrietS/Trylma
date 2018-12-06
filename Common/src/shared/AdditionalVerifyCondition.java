@@ -1,7 +1,7 @@
 package shared;
 
 //klasa wspomagająca dla MovementStrategy, umożliwia dodawanie dodatkowych warunków weryfikacji ruchu
-public abstract class AdditionalVerifyCondition
+public interface AdditionalVerifyCondition
 {
-    abstract boolean verify();
+    boolean verify();
 }
