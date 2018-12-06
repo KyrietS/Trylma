@@ -1,7 +1,7 @@
 package shared;
 
 //
-public class JumpStatusVerifyCondition extends AdditionalVerifyCondition
+public class JumpStatusVerifyCondition implements AdditionalVerifyCondition
 {
     private int status;
 
@@ -15,8 +15,8 @@ public class JumpStatusVerifyCondition extends AdditionalVerifyCondition
         this.status = status;
     }
 
-    @Override
-    boolean verify()
+
+    public boolean verify()
     {
         return status != 2;
     }

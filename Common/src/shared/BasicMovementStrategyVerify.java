@@ -9,13 +9,12 @@ public class BasicMovementStrategyVerify
     /*
         sprawdza czy ruch jest poprawny
         zwraca 0 jeśli niepoprawny, 1 jeśli ruch pojedynczy, 2 jeśli ruch przesakujący (można wykonać kolejny ruch), -1 gdy wystąpił błąd
-        funkcja przystosowana do przyjęcia jednego JumpStatusVerifyCondition
-
+        funkcja przystosowana do przyjęcia JumpStatusVerifyCondition i PreviousPawnVerifyCondition (w tej kolejności)
      */
     public static int verifyMove(IBoard board, int x1, int y1, int x2, int y2, AdditionalVerifyCondition[] additionalVerifyConditions)
     {
-        //sprawdza listę dodatkowych warunków (musi być tylko 1)
-        if (additionalVerifyConditions.length != 1)
+        //sprawdza listę dodatkowych warunków (muszą być 2)
+        if (additionalVerifyConditions.length != 2)
         {
             return -1;
         }
@@ -32,6 +31,12 @@ public class BasicMovementStrategyVerify
         {
             return 0;
         }
+        //Jeżeli wykonaliśmy juz skok (status==2) to musimy ruszyć tym samym pionkiem co poprzednio
+        if (!additionalVerifyConditions[0].verify() && additionalVerifyConditions[1].verify())
+        {
+            return 0;
+        }
+
         switch (Math.abs(dy))
         {
             //Pola leżą w tym samym rzędzie
