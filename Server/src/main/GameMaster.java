@@ -1,12 +1,14 @@
 package main;
 
-public class GameMaster
+import shared.AdditionalVerifyCondition;
+
+class GameMaster
 {
     private Board board;
     private MovementStrategy movementStrategy;
     private BoardFactory boardFactory;
 
-    public GameMaster(MovementStrategy ms, BoardFactory bf)
+    GameMaster(MovementStrategy ms, BoardFactory bf)
     {
         board = new ClassicBoard();
         movementStrategy = ms;
@@ -19,21 +21,18 @@ public class GameMaster
     }
 
     //weryfikuje poprawność ruchu z pola (x1,y1) na pole (x2,y2) na podstawie podanych zasad movementstrategy
-    int verifyMove(int x1, int y1, int x2, int y2)
+    int verifyMove(int x1, int y1, int x2, int y2, AdditionalVerifyCondition[] additionalVerifyConditions)
     {
-        return movementStrategy.verifyMove(board, x1, y1, x2, y2);
+        return movementStrategy.verifyMove(board, x1, y1, x2, y2, additionalVerifyConditions);
     }
 
     //wykonuje ruch pionkiem z pola (x1,y1) na pole (x2,y2) na podstawie podanych zasad movementstrategy
     void makeMove(int x1, int y1, int x2, int y2)
     {
-        if (verifyMove(x1, y1, x2, y2) > 0)
-        {
             board = movementStrategy.makeMove(board, x1, y1, x2, y2);
-        }
     }
 
-    //Zwraca kolo pola (x,y)
+    //Zwraca kolor pola (x,y)
     String getColorAtPos(int x, int y)
     {
         try
@@ -44,6 +43,7 @@ public class GameMaster
             return null;
         }
     }
+
 
     /*
         sprawdza czy gracz o podanym kolorze jest zwycięzcą
