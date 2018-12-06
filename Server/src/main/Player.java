@@ -2,8 +2,8 @@ package main;
 
 public abstract class Player
 {
-    protected String color;
-    protected boolean finished;
+    String color;
+    private boolean finished;
 
     Player()
     {

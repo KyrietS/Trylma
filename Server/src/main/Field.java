@@ -1,5 +1,7 @@
 package main;
 
+import shared.IField;
+
 class Field implements IField
 {
     private String currentColor;

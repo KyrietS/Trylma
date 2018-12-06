@@ -2,9 +2,9 @@ package main;
 
 import java.net.Socket;
 
-public class RealPlayer extends Player
+class RealPlayer extends Player
 {
-    protected CommunicationManager communicationManager;
+    private CommunicationManager communicationManager;
 
     RealPlayer(Socket socket, String color) throws Exception
     {

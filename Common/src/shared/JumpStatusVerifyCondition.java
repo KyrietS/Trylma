@@ -25,4 +25,9 @@ public class JumpStatusVerifyCondition extends AdditionalVerifyCondition
     {
         this.status = status;
     }
+
+    public int getStatus()
+    {
+        return status;
+    }
 }
