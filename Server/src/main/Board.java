@@ -1,6 +1,7 @@
 package main;
 
-public abstract class Board
+public abstract class Board implements IBoard
+
 {
     int columns, rows;
     Field[][] fields;
@@ -64,7 +65,8 @@ public abstract class Board
     //Sprawdza czy wszyskie pionki danego koloru są już w swoim celu
     public abstract boolean isWinner(String color);
 
-    Field getField(int x, int y)
+    @Override
+    public IField getField(int x, int y)
     {
         if (x < 1 || y < 1 || x > columns || y > rows)
         {

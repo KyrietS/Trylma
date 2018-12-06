@@ -1,6 +1,6 @@
 package main;
 
-class Field
+class Field implements IField
 {
     private String currentColor;
     private String nativeColor;
@@ -20,7 +20,8 @@ class Field
         this.playable = playable;
     }
 
-    String getCurrentColor()
+    @Override
+    public String getCurrentColor()
     {
         return currentColor;
     }
@@ -30,7 +31,8 @@ class Field
         this.currentColor = currentColor;
     }
 
-    String getNativeColor()
+    @Override
+    public String getNativeColor()
     {
         return nativeColor;
     }
@@ -40,7 +42,8 @@ class Field
         this.nativeColor = nativeColor;
     }
 
-    String getTargetColor()
+    @Override
+    public String getTargetColor()
     {
         return targetColor;
     }
@@ -50,7 +53,8 @@ class Field
         this.targetColor = targetColor;
     }
 
-    boolean isPlayable()
+    @Override
+    public boolean isPlayable()
     {
         return playable;
     }
