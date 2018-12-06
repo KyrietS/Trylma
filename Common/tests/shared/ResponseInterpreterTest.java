@@ -1,8 +1,6 @@
-package main;
+package shared;
 
 import org.junit.jupiter.api.Test;
-import shared.Response;
-import shared.ResponseInterpreter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
