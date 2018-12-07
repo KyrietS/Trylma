@@ -43,7 +43,7 @@ public class Controller
 
         // Tymczasowe wstawienie pionków na planszę do testowania
         fields.get( 150 ).setColor( "R" );
-        fields.get( 135 ).setColor( "R" );
+        fields.get( 143 ).setColor( "R" );
         fields.get( 151 ).setColor( "G" );
 
         board = new Board( fields );
@@ -81,7 +81,7 @@ public class Controller
             }
             else // Informacja dla programistów
             {
-                throw new RuntimeException( "Jeden z elementów wewnątrz Pane jest typu innego nić Circle" );
+                throw new RuntimeException( "Jeden z elementów wewnątrz Pane jest typu innego niż Circle" );
             }
         }
     }
