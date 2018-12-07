@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
@@ -19,6 +18,8 @@ public class Controller
 
     private List<Field> fields = new ArrayList<>();
     private CommunicationManager communicationManager;
+    private Board board;
+    private Player player;
 
     /**
      * Funkcja uruchamiana przy starcie aplikacji
@@ -39,6 +40,14 @@ public class Controller
         }
         if( communicationManager != null )
             System.out.println("Połączono z serwerem");
+
+        // Tymczasowe wstawienie pionków na planszę do testowania
+        fields.get( 150 ).setColor( "R" );
+        fields.get( 135 ).setColor( "R" );
+        fields.get( 151 ).setColor( "G" );
+
+        board = new Board( fields );
+        player = new Player( communicationManager, board, "R" );
     }
 
     /**
@@ -76,7 +85,7 @@ public class Controller
             }
         }
     }
-int counter = 0;
+
     /**
      * Obsługuje zdarzenie kliknięcia w pole (typu Circle)
      */
@@ -98,22 +107,18 @@ int counter = 0;
 
         // TODO Obsługa kliknięć w pole. Tymczasowo jest zmieniane wypełnienie przy kliknięciu.
 
-        if( counter < 5 )
-        {
-            field.setColor("V");
-            counter++;
-        }
-        else
-            field.setColor("");
-
         System.out.println( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
         if( communicationManager != null )
             communicationManager.writeLine( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
-/*
+
+        player.selectPiece( field.getX(), field.getY() );
+
+        /*
         if( field.isSelected() )
             field.setSelected( false );
         else
-            field.setSelected( true );*/
+            field.setSelected( true );
+            */
     }
 
     /**
