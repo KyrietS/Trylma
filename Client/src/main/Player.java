@@ -90,34 +90,13 @@ public class Player
         int result; // rezultat funkcji verifyMove (jeśli 0, to ruch niepoprawny)
 
 
-        List<Coord> jumpableFields = new ArrayList<>();
-        // Sprawdzanie możliwych ruchów w odległości 1 od pionka
-
-        // na lewo
-        result = BasicMovementStrategyVerify.verifyMove( board, x, y, x-1, y, conditions );
-        if( result != 0 )
-            board.mark( x-1, y );
-        // na prawo
-        result = BasicMovementStrategyVerify.verifyMove( board, x, y, x+1, y, conditions );
-        if( result != 0 )
-            board.mark( x+1, y );
-        // góra lewo (dla wiersza nieparzystego, aby dojść do pola góra lewo trzeba zmniejszyć x o 1)
-        result = BasicMovementStrategyVerify.verifyMove( board, x, y, ( y % 2 == 0 ? x : x - 1 ), y-1, conditions );
-        if( result != 0 )
-            board.mark( ( y % 2 == 0 ? x : x - 1 ), y - 1 );
-        // góra prawo (dla wiersza parzystego, aby dojść do pola góra prawo trzeba zwiększyć x o 1)
-        result = BasicMovementStrategyVerify.verifyMove( board, x, y, ( y % 2 == 0 ? x + 1 : x ), y - 1, conditions );
-        if( result != 0 )
-            board.mark( ( y % 2 == 0 ? x + 1 : x ), y - 1 );
-        // dół lewo (dla wiersza nieparzystego trzeba zmniejszyć x o 1)
-        result = BasicMovementStrategyVerify.verifyMove( board, x, y, ( y % 2 == 0 ? x : x - 1 ), y + 1, conditions );
-        if( result != 0 )
-            board.mark( ( y % 2 == 0 ? x : x - 1 ), y + 1 );
-        // dół prawo (dla wiersza parzystego trzeba zwiększyc x o 1)
-        result = BasicMovementStrategyVerify.verifyMove( board, x, y, ( y % 2 == 0 ? x + 1 : x ), y + 1, conditions );
-        if( result != 0 )
-            board.mark( ( y % 2 == 0 ? x + 1 : x ), y + 1 );
-
+        List<Coord> nearbyCoords = board.getNerbyCoords( x, y );
+        for( Coord coord : nearbyCoords )
+        {
+            result = BasicMovementStrategyVerify.verifyMove( board, x, y, coord.getX(), coord.getY(), conditions );
+            if( result != 0 )
+                board.mark( coord.getX(), coord.getY() );
+        }
     }
 }
 
