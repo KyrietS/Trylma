@@ -1,5 +1,13 @@
 package main;
 
+import shared.AdditionalVerifyCondition;
+import shared.BasicMovementStrategyVerify;
+import shared.JumpStatusVerifyCondition;
+import shared.PreviousPawnVerifyCondition;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player
 {
     private Board board;
@@ -18,24 +26,33 @@ public class Player
      * Oznaczenie pola jako aktywnego. Aktywne pole jest podświetlone i
      * wyświetlane są do niego sugerowane miejsca skoków.
      */
-    public void selectPiece( int x, int y )
+    void selectPiece( int x, int y )
     {
         // jeśli kliknięto w pionka swojego koloru, to go zaznacz
         if( !board.isEmpty( x, y ) && board.getColor( x, y ).equals( color ) )
         {
+            // zaznaczenie pionka
             board.select( x, y );
             selected = new Coord( x, y );
+            // podświetlenie pól, na które można skoczyć
+            markPossibleJumps( x, y );
         }
-        else if( selected != null && board.isEmpty( x, y ) ) // po zaznaczeniu pionka kliknięto w puste pole
+        // jakiś pionek jest zaznaczony i kliknięto w puste pole (wykonanie skoku)
+        else if( selected != null && board.isEmpty( x, y ) )
         {
             moveSelectedTo( x, y );
+
+            // odznaczanie pól
+            board.deselect();
+            selected = null;
 
             // TODO musi być asynchroniczna (?)
             waitAndListen();
         }
         else // kliknięto gdzieś tam, odznacz pole (jeśli było zaznaczone)
         {
-            board.unselectSelected();
+            board.deselect();
+            selected = null;
         }
     }
 
@@ -46,7 +63,7 @@ public class Player
         int fromY = selected.getY();
 
         String msg = "MOVE " + fromX + " " + fromY + " " + x + " " + y;
-        communicationManager.writeLine( msg );
+        //communicationManager.writeLine( msg );
     }
 
     public void skipTurn()
@@ -57,31 +74,50 @@ public class Player
     private void waitAndListen()
     {
         // TODO implement
-        System.out.println();
+        System.out.println("Czekanie...");
+    }
+
+    private void markPossibleJumps( int x, int y )
+    {
+        JumpStatusVerifyCondition jumpStatusVerifyCondition = new JumpStatusVerifyCondition(0);
+        PreviousPawnVerifyCondition previousPawnVerifyCondition = new PreviousPawnVerifyCondition();
+        AdditionalVerifyCondition[] conditions = {jumpStatusVerifyCondition, previousPawnVerifyCondition};
+
+        // wyczyść obecne zaznaczenie
+        board.unmarkAll();
+
+        //BasicMovementStrategyVerify.verifyMove( board, x, y, ..., ..., conditions );
+        int result; // rezultat funkcji verifyMove (jeśli 0, to ruch niepoprawny)
+
+
+        List<Coord> jumpableFields = new ArrayList<>();
+        // Sprawdzanie możliwych ruchów w odległości 1 od pionka
+
+        // na lewo
+        result = BasicMovementStrategyVerify.verifyMove( board, x, y, x-1, y, conditions );
+        if( result != 0 )
+            board.mark( x-1, y );
+        // na prawo
+        result = BasicMovementStrategyVerify.verifyMove( board, x, y, x+1, y, conditions );
+        if( result != 0 )
+            board.mark( x+1, y );
+        // góra lewo (dla wiersza nieparzystego, aby dojść do pola góra lewo trzeba zmniejszyć x o 1)
+        result = BasicMovementStrategyVerify.verifyMove( board, x, y, ( y % 2 == 0 ? x : x - 1 ), y-1, conditions );
+        if( result != 0 )
+            board.mark( ( y % 2 == 0 ? x : x - 1 ), y - 1 );
+        // góra prawo (dla wiersza parzystego, aby dojść do pola góra prawo trzeba zwiększyć x o 1)
+        result = BasicMovementStrategyVerify.verifyMove( board, x, y, ( y % 2 == 0 ? x + 1 : x ), y - 1, conditions );
+        if( result != 0 )
+            board.mark( ( y % 2 == 0 ? x + 1 : x ), y - 1 );
+        // dół lewo (dla wiersza nieparzystego trzeba zmniejszyć x o 1)
+        result = BasicMovementStrategyVerify.verifyMove( board, x, y, ( y % 2 == 0 ? x : x - 1 ), y + 1, conditions );
+        if( result != 0 )
+            board.mark( ( y % 2 == 0 ? x : x - 1 ), y + 1 );
+        // dół prawo (dla wiersza parzystego trzeba zwiększyc x o 1)
+        result = BasicMovementStrategyVerify.verifyMove( board, x, y, ( y % 2 == 0 ? x + 1 : x ), y + 1, conditions );
+        if( result != 0 )
+            board.mark( ( y % 2 == 0 ? x + 1 : x ), y + 1 );
+
     }
 }
 
-/**
- * Klasa pomocnicza do przechowywania współrzędnych
- */
-class Coord
-{
-    private int x;
-    private int y;
-    Coord( int x, int y )
-    {
-        this.x = x;
-        this.y = y;
-    }
-
-    int getX()
-    {
-        return x;
-    }
-
-    int getY()
-    {
-        return y;
-    }
-
-}

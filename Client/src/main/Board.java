@@ -1,8 +1,10 @@
 package main;
 
+import shared.IBoard;
+
 import java.util.List;
 
-public class Board
+public class Board implements IBoard
 {
     private List<Field> fields;
     private Field selectedField = null;
@@ -22,12 +24,13 @@ public class Board
         selectedField = field;
     }
 
-    void unselectSelected()
+    void deselect()
     {
         if( selectedField != null )
         {
             selectedField.setSelected( false );
             selectedField = null;
+            unmarkAll();
         }
     }
 
@@ -49,13 +52,32 @@ public class Board
         return field.getColor();
     }
 
-    private Field getField( int x, int y )
+    public void mark( int x, int y )
+    {
+        Field field = getField( x, y );
+        if( field != null )
+        {
+            field.setMarked( true );
+        }
+    }
+
+    public void unmarkAll()
+    {
+        for( Field field : fields )
+        {
+            field.setMarked( false );
+        }
+    }
+
+    @Override
+    public Field getField( int x, int y )
     {
         for( Field field : fields )
         {
             if( field.getX() == x && field.getY() == y )
                 return field;
         }
-        throw new RuntimeException( "Nie znaleziono pionka o współrzędnych: (" + x + ", " + y + ")" );
+        //throw new RuntimeException( "Nie znaleziono pionka o współrzędnych: (" + x + ", " + y + ")" );
+        return null;
     }
 }

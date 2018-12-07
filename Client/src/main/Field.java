@@ -2,17 +2,20 @@ package main;
 
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.StrokeType;
+import shared.IField;
 
 /**
  * Klasa reprezentująca pojedyncze, klikalne pole w grze
  */
-class Field
+class Field implements IField
 {
     private int x;                      // Współrzędna X pola (kolumna)
     private int y;                      // Współrzędna Y pola (wiersz)
     private Circle circle;              // Referencja do odpowiadającego Circle w GUI
     private String color = "";          // Kolor pionka na danym polu ("" oznacza pole puste)
     private boolean selected = false;   // Czy pole jest zaznaczone. (Zaznaczone pole wygląda inaczej)
+    private boolean marked   = false;   // Czy pole jest podświetlone.
 
     Field( int x, int y, Circle circle )
     {
@@ -86,18 +89,17 @@ class Field
     void setSelected( boolean state )
     {
         //TODO znaznaczenie pola zmienia ramkę
-        /*
         if( state )
         {
             selected = true;
-            circle.setFill( Paint.valueOf( "#7afffa" ) );
+            circle.setStrokeType( StrokeType.OUTSIDE );
         }
         else
         {
             selected = false;
-            circle.setFill( Paint.valueOf( "#ffffff" ) );
+            circle.setStrokeType( StrokeType.INSIDE );
         }
-        */
+
     }
 
     /** Sprawdza czy pole jest obecnie zaznaczone */
@@ -110,5 +112,49 @@ class Field
     boolean circleEquals( Circle circle )
     {
         return this.circle == circle;
+    }
+
+    void setMarked( boolean state )
+    {
+        if( state && color.equals( "" ) )
+        {
+            circle.setFill( Paint.valueOf( "#47F2FF" ) );
+            marked = true;
+        }
+        else if( marked )
+        {
+            circle.setFill( Color.WHITE );
+            marked = false;
+        }
+
+    }
+
+    @Override
+    public String getCurrentColor()
+    {
+        if( color == null || color.equals( "" ) )
+            return "none";
+        else
+            return color;
+    }
+
+    @Override
+    public String getNativeColor()
+    {
+        // TODO implement
+        return null;
+    }
+
+    @Override
+    public String getTargetColor()
+    {
+        // TODO implement
+        return null;
+    }
+
+    @Override
+    public boolean isPlayable()
+    {
+        return !circle.isDisabled();
     }
 }
