@@ -5,7 +5,6 @@ import shared.BasicMovementStrategyVerify;
 import shared.JumpStatusVerifyCondition;
 import shared.PreviousPawnVerifyCondition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Player
@@ -90,7 +89,7 @@ public class Player
         int result; // rezultat funkcji verifyMove (jeśli 0, to ruch niepoprawny)
 
 
-        List<Coord> nearbyCoords = board.getNerbyCoords( x, y );
+        List<Coord> nearbyCoords = board.getNearbyCoords( x, y );
         for( Coord coord : nearbyCoords )
         {
             result = BasicMovementStrategyVerify.verifyMove( board, x, y, coord.getX(), coord.getY(), conditions );

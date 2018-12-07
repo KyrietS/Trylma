@@ -71,7 +71,7 @@ public class Board implements IBoard
         }
     }
 
-    public List<Coord> getNerbyCoords( int x, int y )
+    public List<Coord> getNearbyCoords( int x, int y )
     {
         List<Coord> coords = new ArrayList<>();
 
