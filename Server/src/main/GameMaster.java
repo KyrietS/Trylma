@@ -16,9 +16,9 @@ class GameMaster
         boardFactory = bf;
     }
 
-    void initializeBoard( PlayerColor[] colors)
+    void initializeBoard( int numberOfPlayers )
     {
-        board = boardFactory.createBoard(colors);
+        board = boardFactory.createBoard( numberOfPlayers );
     }
 
     //weryfikuje poprawność ruchu z pola (x1,y1) na pole (x2,y2) na podstawie podanych zasad movementstrategy

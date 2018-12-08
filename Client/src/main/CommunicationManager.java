@@ -38,7 +38,7 @@ public class CommunicationManager
      * @return komunikat w odpowiednim formacie
      * @throws Exception zerwano połączenie
      */
-    public String readLine() throws Exception
+    synchronized String readLine() throws Exception
     {
         return in.readLine();
     }
