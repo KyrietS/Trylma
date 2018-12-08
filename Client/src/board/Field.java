@@ -3,7 +3,6 @@ package board;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
-import shared.IField;
 import shared.PlayerColor;
 
 /**
@@ -101,12 +100,17 @@ public class Field
 
     }
 
-    /** Porównuje referencję do FX'owego Cirlce */
+    /**
+     * Porównuje referencję do FX'owego Cirlce
+     */
     public boolean circleEquals( Circle circle )
     {
         return this.circle == circle;
     }
 
+    /**
+     * Ustawia podświetlenie pola
+     */
     void setMarked( boolean state )
     {
         if( circle.isDisabled() )
@@ -122,6 +126,9 @@ public class Field
         }
     }
 
+    /**
+     * Zwraca informację o tym, czy Circle powiązany z polem jest wyłączony (nieaktywny)
+     */
     boolean isDisabled()
     {
         return circle.isDisabled();

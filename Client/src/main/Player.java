@@ -14,7 +14,7 @@ public class Player
     private Coord selected;
     private CommunicationManager communicationManager;
 
-    public Player( CommunicationManager cm, Board board, PlayerColor color )
+    Player( CommunicationManager cm, Board board, PlayerColor color )
     {
         this.communicationManager = cm;
         this.board = board;
@@ -55,6 +55,10 @@ public class Player
         }
     }
 
+    /**
+     * Zleca serwerowi przesunięcie zaznaczonego pionka (celected)
+     * na pozycję (x, y)
+     */
     private void moveSelectedTo( int x, int y )
     {
         // wysyła propozycję ruchu do serwera
@@ -65,24 +69,35 @@ public class Player
         //communicationManager.writeLine( msg );
     }
 
+    /**
+     * Wysyoła do serwera komunikat o zakończeniu tury
+     */
     public void skipTurn()
     {
         // TODO implement
     }
 
+    /**
+     * Nasłuchuje wszystkich przycodzących komunikatów. Nasłuchiwanie się
+     * kończy, gdy zostanie odebrany komunikat 'YOU'
+     */
     private void waitAndListen()
     {
         // TODO implement
         System.out.println("Czekanie...");
     }
 
+    /**
+     * Podświetla pola w pobliżu pionka (x, y), na które potencjalnie można skoczyć.
+     * Przed wykonaniem, usuwa wcześniejsze powietlenie (jeśli istniało)
+     */
     private void markPossibleJumps( int x, int y )
     {
         JumpStatusVerifyCondition jumpStatusVerifyCondition = new JumpStatusVerifyCondition(0);
         PreviousPawnVerifyCondition previousPawnVerifyCondition = new PreviousPawnVerifyCondition();
         AdditionalVerifyCondition[] conditions = {jumpStatusVerifyCondition, previousPawnVerifyCondition};
 
-        // wyczyść obecne zaznaczenie
+        // wyczyść obecne podświetlenie
         board.unmarkAll();
 
 

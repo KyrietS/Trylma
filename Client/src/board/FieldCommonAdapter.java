@@ -3,8 +3,14 @@ package board;
 import shared.IField;
 import shared.PlayerColor;
 
+/**
+ * Adapter umożliwiający korzystanie ze współdzielonych funkcji z modułu Common.
+ * Adapter jest wykorzystywany przez BoardCommonAdapter
+ * @see BoardCommonAdapter
+ */
 public class FieldCommonAdapter implements IField
 {
+    /** Adaptowane pole */
     private Field field;
 
     FieldCommonAdapter( Field adaptedField )
@@ -12,6 +18,7 @@ public class FieldCommonAdapter implements IField
         this.field = adaptedField;
     }
 
+    /** Zwraca kolor pionka na polu */
     @Override
     public PlayerColor getCurrentColor()
     {
@@ -21,6 +28,7 @@ public class FieldCommonAdapter implements IField
             return field.getColor();
     }
 
+    /** Zwraca bazowy kolor pola (obramowanie pola) */
     @Override
     public PlayerColor getNativeColor()
     {
@@ -28,6 +36,9 @@ public class FieldCommonAdapter implements IField
         return null;
     }
 
+    /**
+     * Zwraca kolor pionka, który musi się znaleźć na tym polu, aby spełnić warunek zwycięstwa.
+     */
     @Override
     public PlayerColor getTargetColor()
     {
@@ -35,6 +46,7 @@ public class FieldCommonAdapter implements IField
         return null;
     }
 
+    /** Informuje, czy pole uczestniczy w rozgrywce (jest częścią grywalnej planszy) */
     @Override
     public boolean isPlayable()
     {
