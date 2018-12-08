@@ -7,14 +7,24 @@ import shared.IField;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter umożliwiający użycie klasy Board z klienta w publicznych
+ * metodach modułu Common.
+ */
 public class BoardCommonAdapter implements IBoard
 {
+    /** Adaptowana plansza */
     private Board board;
+
     public BoardCommonAdapter( Board adaptedBoard )
     {
         this.board = adaptedBoard;
     }
 
+    /**
+     * Zwraca współrzędne wszystkich pól znajdujących się w odległości 1 lub 2
+     * od pola (x, y), na któe można potencjalnie skoczyć (w linii prostej)
+     */
     public List<Coord> getNearbyCoords( int x, int y )
     {
         List<Coord> coords = new ArrayList<>();
@@ -52,6 +62,9 @@ public class BoardCommonAdapter implements IBoard
         return coords;
     }
 
+    /**
+     * Zwraca pole znajdujące się na pozycji (x, y)
+     */
     @Override
     public IField getField( int x, int y )
     {

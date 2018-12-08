@@ -5,6 +5,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * Klasa obsługująca komunikację z serwerem.
+ */
 public class CommunicationManager
 {
     private int port;           // domyślnie 4444
@@ -30,12 +33,21 @@ public class CommunicationManager
         }
     }
 
+    /**
+     * Odebranie komunikatu od serwera
+     * @return komunikat w odpowiednim formacie
+     * @throws Exception zerwano połączenie
+     */
     public String readLine() throws Exception
     {
         return in.readLine();
     }
 
-    public void writeLine( String line )
+    /**
+     * Wysłanie komunikatu do serwera
+     * @param line komunikat w odpowiednim formacie
+     */
+    void writeLine( String line )
     {
         out.println( line );
     }
