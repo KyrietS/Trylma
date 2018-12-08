@@ -2,6 +2,7 @@ package main;
 
 import shared.BasicMovementStrategyVerify;
 import shared.IBoard;
+import shared.PlayerColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class Board implements IBoard
         }
     }
 
-    public void addPiece( int x, int y, String color )
+    public void addPiece( int x, int y, PlayerColor color )
     {
         Field field = getField( x, y );
         field.setColor( color );
@@ -48,7 +49,7 @@ public class Board implements IBoard
         return field.getColor().equals( "" );
     }
 
-    public String getColor( int x, int y )
+    public PlayerColor getColor( int x, int y )
     {
         Field field = getField( x, y );
         return field.getColor();
@@ -94,7 +95,7 @@ public class Board implements IBoard
 
         // na lewo
         coords.add( new Coord( x - 2, y ) );
-        //na prawo
+        // na prawo
         coords.add( new Coord( x + 2, y ) );
         // góra lewo
         coords.add( new Coord( x - 1, y - 2 ) );

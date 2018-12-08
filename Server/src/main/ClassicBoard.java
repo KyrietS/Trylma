@@ -1,5 +1,7 @@
 package main;
 
+import shared.PlayerColor;
+
 //klasyczny board - 6 ramienna gwiazda w której każde ramię ma 10 pól a wewnętrzny sześciokąt - 61 pól
 public class ClassicBoard extends Board
 {
@@ -31,14 +33,14 @@ public class ClassicBoard extends Board
             {
                 if (fields[i][j].isPlayable())
                 {
-                    if (!fields[i][j].getCurrentColor().equals("none"))
+                    if (!fields[i][j].getCurrentColor().equals( PlayerColor.NONE))
                     {
                         //jezeli string jest niepusty to dodaj spacje
                         if (!stringBuilder.toString().equals(""))
                         {
                             stringBuilder.append(" ");
                         }
-                        stringBuilder.append(fields[i][j].getCurrentColor());
+                        stringBuilder.append(fields[i][j].getCurrentColor().toString());
                         stringBuilder.append(" ");
                         stringBuilder.append(i);
                         stringBuilder.append(" ");
@@ -51,7 +53,7 @@ public class ClassicBoard extends Board
     }
 
     @Override
-    public boolean isWinner(String color)
+    public boolean isWinner(PlayerColor color)
     {
         Field tempField;
         for (int i = 1; i <= columns; i++)

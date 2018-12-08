@@ -1,8 +1,10 @@
 package main;
 
+import shared.PlayerColor;
+
 public abstract class Player
 {
-    String color;
+    PlayerColor color;
     private boolean finished;
 
     Player()
@@ -10,7 +12,7 @@ public abstract class Player
 
     }
 
-    Player(String color)
+    Player( PlayerColor color)
     {
         this.color = color;
     }
@@ -19,7 +21,7 @@ public abstract class Player
 
     abstract String readResponse() throws Exception;
 
-    public String getColor()
+    public PlayerColor getColor()
     {
         return color;
     }

@@ -1,20 +1,17 @@
 package main;
 
-import shared.AdditionalVerifyCondition;
-import shared.BasicMovementStrategyVerify;
-import shared.JumpStatusVerifyCondition;
-import shared.PreviousPawnVerifyCondition;
+import shared.*;
 
 import java.util.List;
 
 public class Player
 {
     private Board board;
-    private String color;
+    private PlayerColor color;
     private Coord selected;
     private CommunicationManager communicationManager;
 
-    public Player( CommunicationManager cm, Board board, String color )
+    public Player( CommunicationManager cm, Board board, PlayerColor color )
     {
         this.communicationManager = cm;
         this.board = board;

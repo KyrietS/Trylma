@@ -1,8 +1,10 @@
 package main;
 
+import shared.PlayerColor;
+
 public class ClassicBoardFactory implements BoardFactory
 {
-    public Board createBoard(String[] colors)
+    public Board createBoard( PlayerColor[] colors)
     {
         ClassicBoard board = new ClassicBoard();
         //
@@ -45,7 +47,7 @@ public class ClassicBoardFactory implements BoardFactory
                     //iteracja po kolumnach
                     for (int i = beginnings[j - 5]; i <= endings[j - 5]; i++)
                     {
-                        board.setField(i, j, new Field("none", "none", "none", true));
+                        board.setField(i, j, new Field(PlayerColor.NONE, PlayerColor.NONE, PlayerColor.NONE, true));
                     }
                 }
             }

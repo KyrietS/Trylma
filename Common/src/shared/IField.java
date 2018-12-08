@@ -2,11 +2,11 @@ package shared;
 
 public interface IField
 {
-    String getCurrentColor();
+    PlayerColor getCurrentColor();
 
-    String getNativeColor();
+    PlayerColor getNativeColor();
 
-    String getTargetColor();
+    PlayerColor getTargetColor();
 
     boolean isPlayable();
 }

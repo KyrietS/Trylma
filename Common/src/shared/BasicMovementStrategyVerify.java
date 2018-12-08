@@ -1,5 +1,7 @@
 package shared;
 
+import static shared.PlayerColor.NONE;
+
 /*
     klasa obsługująca weryfikację ruchów dla BasicMovementStrategy
 
@@ -27,7 +29,7 @@ public class BasicMovementStrategyVerify
             return 0;
         }
         //pole z którego ruszamy musi zawierać pionek i pole do którego idziemy musi być puste
-        if (!board.getField(x2, y2).getCurrentColor().contentEquals("none") || board.getField(x1, y1).getCurrentColor().contentEquals("none"))
+        if (!board.getField(x2, y2).getCurrentColor().equals( NONE ) || board.getField(x1, y1).getCurrentColor().equals(NONE))
         {
             return 0;
         }
@@ -59,7 +61,7 @@ public class BasicMovementStrategyVerify
                     case 2:
                     {
                         //Sprawdza czy pomiędzy polami znajduje się jakiś pionek którego można przeskoczyć
-                        if (!board.getField((x1 + x2) / 2, y1).getCurrentColor().contentEquals("none"))
+                        if (!board.getField((x1 + x2) / 2, y1).getCurrentColor().equals(NONE))
                         {
                             return 2;
                         }
@@ -109,12 +111,12 @@ public class BasicMovementStrategyVerify
                 if (y1 % 2 == 0)
                 {
                     //Jeżeli skacze w lewo to pole pomiędzy ma współrzędne x==x1 , y==|y2-y1/2|
-                    if (x2 < x1 && !board.getField(x1, (y1 + y2) / 2).getCurrentColor().contentEquals("none"))
+                    if (x2 < x1 && !board.getField(x1, (y1 + y2) / 2).getCurrentColor().equals(NONE))
                     {
                         return 2;
                     }
                     //Jeżeli skacze w prawo to pole pomiędzy ma współrzędne x==x1+1 , y==|y2-y1/2|
-                    else if (x2 > x1 && !board.getField(x1 + 1, (y2 + y1) / 2).getCurrentColor().contentEquals("none"))
+                    else if (x2 > x1 && !board.getField(x1 + 1, (y2 + y1) / 2).getCurrentColor().equals(NONE))
                     {
                         return 2;
                     } else
@@ -124,12 +126,12 @@ public class BasicMovementStrategyVerify
                 } else
                 {
                     //Jeżeli skacze w lewo to pole pomiędzy ma współrzędne x==x1-1 , y==|y2-y1/2|
-                    if (x2 < x1 && !board.getField(x1 - 1, (y1 + y2) / 2).getCurrentColor().contentEquals("none"))
+                    if (x2 < x1 && !board.getField(x1 - 1, (y1 + y2) / 2).getCurrentColor().equals(NONE))
                     {
                         return 2;
                     }
                     //Jeżeli skacze w prawo to pole pomiędzy ma współrzędne x==x1 , y==|y2-y1/2|
-                    else if (x2 > x1 && !board.getField(x1, (y1 + y2) / 2).getCurrentColor().contentEquals("none"))
+                    else if (x2 > x1 && !board.getField(x1, (y1 + y2) / 2).getCurrentColor().equals(NONE))
                     {
                         return 2;
                     } else
