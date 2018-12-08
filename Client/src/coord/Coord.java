@@ -1,24 +1,24 @@
-package main;
+package coord;
 
 /**
  * Klasa pomocnicza do przechowywania współrzędnych
  */
-class Coord
+public class Coord
 {
     private int x;
     private int y;
-    Coord( int x, int y )
+    public Coord( int x, int y )
     {
         this.x = x;
         this.y = y;
     }
 
-    int getX()
+    public int getX()
     {
         return x;
     }
 
-    int getY()
+    public int getY()
     {
         return y;
     }

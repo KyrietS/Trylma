@@ -1,5 +1,8 @@
 package main;
 
+import board.Board;
+import board.BoardCommonAdapter;
+import coord.Coord;
 import shared.*;
 
 import java.util.List;
@@ -82,14 +85,15 @@ public class Player
         // wyczyść obecne zaznaczenie
         board.unmarkAll();
 
-        //BasicMovementStrategyVerify.verifyMove( board, x, y, ..., ..., conditions );
+
+        // Utworzenie adaptera, aby użyć funkcji z Common
+        BoardCommonAdapter commonBoard = new BoardCommonAdapter( board );
+        List<Coord> nearbyCoords = commonBoard.getNearbyCoords( x, y );
+
         int result; // rezultat funkcji verifyMove (jeśli 0, to ruch niepoprawny)
-
-
-        List<Coord> nearbyCoords = board.getNearbyCoords( x, y );
         for( Coord coord : nearbyCoords )
         {
-            result = BasicMovementStrategyVerify.verifyMove( board, x, y, coord.getX(), coord.getY(), conditions );
+            result = BasicMovementStrategyVerify.verifyMove( commonBoard, x, y, coord.getX(), coord.getY(), conditions );
             if( result != 0 )
                 board.mark( coord.getX(), coord.getY() );
         }
