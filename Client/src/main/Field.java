@@ -4,18 +4,19 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 import shared.IField;
+import shared.PlayerColor;
 
 /**
  * Klasa reprezentująca pojedyncze, klikalne pole w grze
  */
 class Field implements IField
 {
-    private int x;                      // Współrzędna X pola (kolumna)
-    private int y;                      // Współrzędna Y pola (wiersz)
-    private Circle circle;              // Referencja do odpowiadającego Circle w GUI
-    private String color = "";          // Kolor pionka na danym polu ("" oznacza pole puste)
-    private boolean selected = false;   // Czy pole jest zaznaczone. (Zaznaczone pole wygląda inaczej)
-    private boolean marked   = false;   // Czy pole jest podświetlone.
+    private int x;                                  // Współrzędna X pola (kolumna)
+    private int y;                                  // Współrzędna Y pola (wiersz)
+    private Circle circle;                          // Referencja do odpowiadającego Circle w GUI
+    private PlayerColor color = PlayerColor.NONE;   // Kolor pionka na danym polu ("" oznacza pole puste)
+    private boolean selected = false;               // Czy pole jest zaznaczone. (Zaznaczone pole wygląda inaczej)
+    private boolean marked   = false;               // Czy pole jest podświetlone.
 
     Field( int x, int y, Circle circle )
     {
@@ -40,31 +41,31 @@ class Field implements IField
      * Ustawia na polu pionka o kolorze 'color'
      * Uwaga: color="" oznacza, że na polu nie stoi zaden pionek
      */
-    void setColor( String color )
+    void setColor( PlayerColor color )
     {
         Stop[] stops = { new Stop(0, Color.WHITE), null };
 
         switch( color )
         {
-        case "":
+        case NONE:
             circle.setFill( Color.WHITE );
             return;
-        case "R":
+        case R:
             stops[ 1 ] = new Stop( 1, Color.RED );
             break;
-        case "G":
+        case G:
             stops[ 1 ] = new Stop( 1, Color.GREEN );
             break;
-        case "Y":
+        case Y:
             stops[ 1 ] = new Stop( 1, Color.YELLOW );
             break;
-        case "B":
+        case B:
             stops[ 1 ] = new Stop( 1, Color.BLUE );
             break;
-        case "O":
+        case O:
             stops[ 1 ] = new Stop( 1, Color.ORANGE );
             break;
-        case "V":
+        case V:
             stops[ 1 ] = new Stop( 1, Color.VIOLET );
             break;
         default:
@@ -77,7 +78,7 @@ class Field implements IField
         circle.setFill( gradient );
     }
 
-    String getColor()
+    PlayerColor getColor()
     {
         return color;
     }
@@ -116,7 +117,7 @@ class Field implements IField
 
     void setMarked( boolean state )
     {
-        if( state && color.equals( "" ) )
+        if( state && color == PlayerColor.NONE )
         {
             circle.setFill( Paint.valueOf( "#47F2FF" ) );
             marked = true;
@@ -130,23 +131,23 @@ class Field implements IField
     }
 
     @Override
-    public String getCurrentColor()
+    public PlayerColor getCurrentColor()
     {
-        if( color == null || color.equals( "" ) )
-            return "none";
+        if( color == null || color == PlayerColor.NONE )
+            return PlayerColor.NONE;
         else
             return color;
     }
 
     @Override
-    public String getNativeColor()
+    public PlayerColor getNativeColor()
     {
         // TODO implement
         return null;
     }
 
     @Override
-    public String getTargetColor()
+    public PlayerColor getTargetColor()
     {
         // TODO implement
         return null;

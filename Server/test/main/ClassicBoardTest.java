@@ -2,6 +2,7 @@ package main;
 
 import org.junit.jupiter.api.Test;
 import shared.IField;
+import shared.PlayerColor;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,16 +31,16 @@ class ClassicBoardTest
     {
         ClassicBoard classicBoard = new ClassicBoard();
         //początkowo pole ma currentColor = "none"
-        classicBoard.setField(1, 1, new Field("none", "none", "none", true));
+        classicBoard.setField(1, 1, new Field( PlayerColor.NONE, PlayerColor.NONE, PlayerColor.NONE, true));
         try
         {
             //dodajemy pionek koloru [G]reen
-            classicBoard.addPiece(1, 1, "G");
+            classicBoard.addPiece(1, 1, PlayerColor.G);
         } catch (UnplayableFieldException ex)
         {
             fail();
         }
-        assertEquals(classicBoard.getField(1, 1).getCurrentColor(), "G");
+        assertEquals(classicBoard.getField(1, 1).getCurrentColor(), PlayerColor.G);
     }
 
     @Test
@@ -47,7 +48,7 @@ class ClassicBoardTest
     {
         ClassicBoard classicBoard = new ClassicBoard();
         //początkowo pole ma currentColor = "G"
-        classicBoard.setField(1, 1, new Field("G", "none", "none", true));
+        classicBoard.setField(1, 1, new Field(PlayerColor.G, PlayerColor.NONE, PlayerColor.NONE, true));
         try
         {
             //usuwamy pionek
@@ -56,6 +57,6 @@ class ClassicBoardTest
         {
             fail();
         }
-        assertEquals(classicBoard.getField(1, 1).getCurrentColor(), "none");
+        assertEquals(classicBoard.getField(1, 1).getCurrentColor(), PlayerColor.NONE);
     }
 }

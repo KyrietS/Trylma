@@ -1,12 +1,13 @@
 package main;
 
 import shared.IField;
+import shared.PlayerColor;
 
 class Field implements IField
 {
-    private String currentColor;
-    private String nativeColor;
-    private String targetColor;
+    private PlayerColor currentColor;
+    private PlayerColor nativeColor;
+    private PlayerColor targetColor;
     private boolean playable;
 
     Field(boolean playable)
@@ -14,7 +15,7 @@ class Field implements IField
 
     }
 
-    Field(String currentColor, String nativeColor, String targetColor, boolean playable)
+    Field(PlayerColor currentColor, PlayerColor nativeColor, PlayerColor targetColor, boolean playable)
     {
         this.currentColor = currentColor;
         this.nativeColor = nativeColor;
@@ -23,34 +24,34 @@ class Field implements IField
     }
 
     @Override
-    public String getCurrentColor()
+    public PlayerColor getCurrentColor()
     {
         return currentColor;
     }
 
-    void setCurrentColor(String currentColor)
+    void setCurrentColor(PlayerColor currentColor)
     {
         this.currentColor = currentColor;
     }
 
     @Override
-    public String getNativeColor()
+    public PlayerColor getNativeColor()
     {
         return nativeColor;
     }
 
-    void setNativeColor(String nativeColor)
+    void setNativeColor(PlayerColor nativeColor)
     {
         this.nativeColor = nativeColor;
     }
 
     @Override
-    public String getTargetColor()
+    public PlayerColor getTargetColor()
     {
         return targetColor;
     }
 
-    void setTargetColor(String targetColor)
+    void setTargetColor(PlayerColor targetColor)
     {
         this.targetColor = targetColor;
     }

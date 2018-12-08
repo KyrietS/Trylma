@@ -1,12 +1,14 @@
 package main;
 
+import shared.PlayerColor;
+
 import java.net.Socket;
 
 class RealPlayer extends Player
 {
     private CommunicationManager communicationManager;
 
-    RealPlayer(Socket socket, String color) throws Exception
+    RealPlayer(Socket socket, PlayerColor color) throws Exception
     {
         this.color = color;
         communicationManager = new CommunicationManager(socket);

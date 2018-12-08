@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
+import shared.PlayerColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +43,12 @@ public class Controller
             System.out.println("Połączono z serwerem");
 
         // Tymczasowe wstawienie pionków na planszę do testowania
-        fields.get( 150 ).setColor( "R" );
-        fields.get( 143 ).setColor( "R" );
-        fields.get( 151 ).setColor( "G" );
+        fields.get( 150 ).setColor( PlayerColor.R );
+        fields.get( 143 ).setColor( PlayerColor.R );
+        fields.get( 151 ).setColor( PlayerColor.G );
 
         board = new Board( fields );
-        player = new Player( communicationManager, board, "R" );
+        player = new Player( communicationManager, board, PlayerColor.R );
     }
 
     /**

@@ -2,6 +2,7 @@ package main;
 
 import shared.IBoard;
 import shared.IField;
+import shared.PlayerColor;
 
 public abstract class Board implements IBoard
 
@@ -15,7 +16,7 @@ public abstract class Board implements IBoard
     }
 
     //Dodaje pionek(ustawia kolor) o podanym kolorze na pole (x,y)
-    void addPiece(int x, int y, String color) throws UnplayableFieldException
+    void addPiece(int x, int y, PlayerColor color) throws UnplayableFieldException
     {
         if (fields[x][y].isPlayable())
         {
@@ -31,7 +32,7 @@ public abstract class Board implements IBoard
     {
         if (fields[x][y].isPlayable())
         {
-            fields[x][y].setCurrentColor("none");
+            fields[x][y].setCurrentColor(PlayerColor.NONE);
         } else
         {
             throw new UnplayableFieldException();
@@ -43,7 +44,7 @@ public abstract class Board implements IBoard
     {
         if (fields[x][y].isPlayable())
         {
-            return fields[x][y].getCurrentColor().contentEquals("none");
+            return fields[x][y].getCurrentColor() == PlayerColor.NONE;
         } else
         {
             throw new UnplayableFieldException();
@@ -51,7 +52,7 @@ public abstract class Board implements IBoard
     }
 
     //Zwraca kolor pola (x,y)
-    String getColor(int x, int y) throws UnplayableFieldException
+    PlayerColor getColor(int x, int y) throws UnplayableFieldException
     {
         if (fields[x][y].isPlayable())
         {
@@ -66,7 +67,7 @@ public abstract class Board implements IBoard
     public abstract String getAsString();
 
     //Sprawdza czy wszyskie pionki danego koloru są już w swoim celu
-    public abstract boolean isWinner(String color);
+    public abstract boolean isWinner(PlayerColor color);
 
     @Override
     public IField getField(int x, int y)

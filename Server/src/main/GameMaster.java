@@ -1,6 +1,7 @@
 package main;
 
 import shared.AdditionalVerifyCondition;
+import shared.PlayerColor;
 
 class GameMaster
 {
@@ -15,7 +16,7 @@ class GameMaster
         boardFactory = bf;
     }
 
-    void initializeBoard(String[] colors)
+    void initializeBoard( PlayerColor[] colors)
     {
         board = boardFactory.createBoard(colors);
     }
@@ -33,7 +34,7 @@ class GameMaster
     }
 
     //Zwraca kolor pola (x,y)
-    String getColorAtPos(int x, int y)
+    PlayerColor getColorAtPos(int x, int y)
     {
         try
         {
@@ -49,7 +50,7 @@ class GameMaster
         sprawdza czy gracz o podanym kolorze jest zwycięzcą
         implementacja funckji przeniesiona do boarda (żeby gamemaster nie musiał mieć wszystkich pól)
      */
-    boolean isWinner(String color)
+    boolean isWinner(PlayerColor color)
     {
         return board.isWinner(color);
     }

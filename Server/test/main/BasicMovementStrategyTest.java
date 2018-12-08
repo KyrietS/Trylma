@@ -3,6 +3,7 @@ package main;
 import org.junit.jupiter.api.Test;
 import shared.AdditionalVerifyCondition;
 import shared.JumpStatusVerifyCondition;
+import shared.PlayerColor;
 import shared.PreviousPawnVerifyCondition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -82,49 +83,49 @@ class BasicMovementStrategyTest
 
 
         //pola do krótkich ruchów
-        board.setField(1, 1, new Field("BLUE", null, null, true));
-        board.setField(2, 1, new Field("none", null, null, true));
-        board.setField(1, 2, new Field("none", null, null, true));
+        board.setField(1, 1, new Field( PlayerColor.B, null, null, true));
+        board.setField(2, 1, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(1, 2, new Field(PlayerColor.NONE, null, null, true));
 
         //pola do blędnych krótkich ruchów
-        board.setField(2, 2, new Field("BLUE", null, null, true));
-        board.setField(2, 3, new Field("RED", null, null, true));
+        board.setField(2, 2, new Field(PlayerColor.B, null, null, true));
+        board.setField(2, 3, new Field(PlayerColor.R, null, null, true));
         board.setField(3, 2, new Field(false));
-        board.setField(4, 4, new Field("none", null, null, true));
+        board.setField(4, 4, new Field(PlayerColor.NONE, null, null, true));
 
         //pola do poprawnych ruchów przeskakujących:
 
         //pola w jednym rzędzie:
         //pole z którego wykonujemy ruch
-        board.setField(5, 5, new Field("BLUE", null, null, true));
+        board.setField(5, 5, new Field(PlayerColor.B, null, null, true));
         //pola w jednym rzędzie z pionkami pomiędzy:
-        board.setField(7, 5, new Field("none", null, null, true));
-        board.setField(6, 5, new Field("GREEN", null, null, true));
-        board.setField(3, 5, new Field("none", null, null, true));
-        board.setField(4, 5, new Field("GREEN", null, null, true));
+        board.setField(7, 5, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(6, 5, new Field(PlayerColor.G, null, null, true));
+        board.setField(3, 5, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(4, 5, new Field(PlayerColor.G, null, null, true));
 
         //pola w oddalonych rzędach - ruch z rzędu nieparzystego
         //pole z którego wykonujemy ruch: (5,5)
-        board.setField(4, 3, new Field("none", null, null, true));
-        board.setField(4, 4, new Field("GREEN", null, null, true));
-        board.setField(6, 3, new Field("none", null, null, true));
-        board.setField(5, 4, new Field("GREEN", null, null, true));
-        board.setField(4, 7, new Field("none", null, null, true));
-        board.setField(4, 6, new Field("GREEN", null, null, true));
-        board.setField(6, 7, new Field("none", null, null, true));
-        board.setField(5, 6, new Field("GREEN", null, null, true));
+        board.setField(4, 3, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(4, 4, new Field(PlayerColor.G, null, null, true));
+        board.setField(6, 3, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(5, 4, new Field(PlayerColor.G, null, null, true));
+        board.setField(4, 7, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(4, 6, new Field(PlayerColor.G, null, null, true));
+        board.setField(6, 7, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(5, 6, new Field(PlayerColor.G, null, null, true));
 
         //pola w oddalonych rzędach - ruch z rzędu parzystego:
         //pole z którego wykonujemy ruch
-        board.setField(8, 8, new Field("BLUE", null, null, true));
-        board.setField(7, 6, new Field("none", null, null, true));
-        board.setField(8, 7, new Field("GREEN", null, null, true));
-        board.setField(9, 6, new Field("none", null, null, true));
-        board.setField(9, 7, new Field("GREEN", null, null, true));
-        board.setField(7, 10, new Field("none", null, null, true));
-        board.setField(8, 9, new Field("GREEN", null, null, true));
-        board.setField(9, 10, new Field("none", null, null, true));
-        board.setField(9, 9, new Field("GREEN", null, null, true));
+        board.setField(8, 8, new Field(PlayerColor.B, null, null, true));
+        board.setField(7, 6, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(8, 7, new Field(PlayerColor.G, null, null, true));
+        board.setField(9, 6, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(9, 7, new Field(PlayerColor.G, null, null, true));
+        board.setField(7, 10, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(8, 9, new Field(PlayerColor.G, null, null, true));
+        board.setField(9, 10, new Field(PlayerColor.NONE, null, null, true));
+        board.setField(9, 9, new Field(PlayerColor.G, null, null, true));
 
         return board;
     }
