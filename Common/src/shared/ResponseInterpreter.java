@@ -44,7 +44,7 @@ public class ResponseInterpreter
                     // liczba ujemna
                     numbers.add( Integer.valueOf( parts[i] ) );
                 }
-                else // w przeciwnym razie będzie to słowo (np. litera R oznaczająca kolor pionka)
+                else // w przeciwnym razie będzie to słowo (np. słowo RED oznaczająca kolor pionka)
                 {
                     words.add( parts[ i ] );
                 }

@@ -2,11 +2,11 @@ package shared;
 
 public enum PlayerColor
 {
-    NONE,   // brak koloru
-    R,      // czerwony
-    G,      // zielony
-    Y,      // żółty
-    B,      // niebieski
-    O,      // pomarańczowy
-    V       // fioletowy
+    NONE,       // brak koloru
+    RED,        // czerwony
+    GREEN,      // zielony
+    YELLOW,     // żółty
+    BLUE,       // niebieski
+    ORANGE,     // pomarańczowy
+    VIOLET      // fioletowy
 }

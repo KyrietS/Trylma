@@ -43,12 +43,12 @@ public class Controller
             System.out.println("Połączono z serwerem");
 
         // Tymczasowe wstawienie pionków na planszę do testowania
-        fields.get( 150 ).setColor( PlayerColor.R );
-        fields.get( 143 ).setColor( PlayerColor.R );
-        fields.get( 151 ).setColor( PlayerColor.G );
+        fields.get( 150 ).setColor( PlayerColor.RED );
+        fields.get( 143 ).setColor( PlayerColor.RED );
+        fields.get( 151 ).setColor( PlayerColor.GREEN );
 
         board = new Board( fields );
-        player = new Player( communicationManager, board, PlayerColor.R );
+        player = new Player( communicationManager, board, PlayerColor.RED );
     }
 
     /**

@@ -21,7 +21,7 @@ public class ClassicBoard extends Board
     }
 
     /*zwraca string który informuje o kolorze i położeniu pionków
-        string jest w formacjie KOLOR X Y KOLOR X Y KOLOR X Y ... KOLOR X Y
+        string jest w formacie KOLOR X Y KOLOR X Y KOLOR X Y ... KOLOR X Y
      */
     @Override
     public String getAsString()
