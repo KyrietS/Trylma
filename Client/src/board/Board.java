@@ -1,5 +1,6 @@
 package board;
 
+import javafx.application.Platform;
 import shared.PlayerColor;
 
 import java.util.List;
@@ -18,6 +19,18 @@ public class Board
     public Board( List<Field> fields )
     {
         this.fields = fields;
+    }
+
+    /**
+     * Czyści całą planszę z pionków
+     */
+    public void clearBoard()
+    {
+        for( Field field : fields )
+        {
+            if( !field.isDisabled() )
+                field.setColor( PlayerColor.NONE );
+        }
     }
 
     /**
@@ -61,7 +74,7 @@ public class Board
     {
         Field field = getField( x, y );
         if( field != null )
-            field.setColor( color );
+            Platform.runLater( () -> field.setColor( color ) );
     }
 
     /**

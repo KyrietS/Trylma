@@ -23,6 +23,7 @@ public class Controller
     private CommunicationManager communicationManager;
     private Board board;
     private Player player;
+    private boolean guiBlocked = false;
 
     /**
      * Funkcja uruchamiana przy starcie aplikacji
@@ -35,7 +36,7 @@ public class Controller
         try
         {
             System.out.println("Podłączanie do serwera...");
-            //communicationManager = new CommunicationManager( "localhost", 4444 );
+            communicationManager = new CommunicationManager( "localhost", 4444 );
         }
         catch( Exception e )
         {
@@ -46,11 +47,15 @@ public class Controller
 
         board = new Board( fields );
 
-        // TODO Tymczasowe wstawienie pionków na planszę do testowania
-        board.addPiece( 5, 7, PlayerColor.RED );
-        board.addPiece( 6, 7, PlayerColor.ORANGE );
+        try
+        {
+            player = new Player( communicationManager, board, this::blockGUI );
+        }
+        catch( Exception e )
+        {
+            System.out.println("Problem z utworzeniem gracza: " + e.getMessage());
+        }
 
-        player = new Player( communicationManager, board, PlayerColor.RED );
     }
 
     /**
@@ -94,6 +99,9 @@ public class Controller
      */
     private void onFieldClick( MouseEvent event )
     {
+        if( guiBlocked )
+            return;
+
         // Ten handler jest przeznaczony tylko dla kliknięć w Circle
         if( !(event.getSource() instanceof Circle ) )
             return;
@@ -136,5 +144,10 @@ public class Controller
         }
 
         return null;
+    }
+
+    private void blockGUI( boolean state )
+    {
+        this.guiBlocked = state;
     }
 }

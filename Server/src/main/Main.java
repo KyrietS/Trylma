@@ -4,7 +4,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-       /* Server server;
+        Server server;
         try
         {
             server = new Server( 4444 );
@@ -16,10 +16,5 @@ public class Main
         }
 
         server.createMatch( 1, 0 );
-
-       ClassicBoardFactory classicBoardFactory = new ClassicBoardFactory();
-       String[] colors = {"RED","BLUE"};
-       Board classicBoard = classicBoardFactory.createBoard(colors);
-       System.out.print(classicBoard.getAsString());*/
     }
 }

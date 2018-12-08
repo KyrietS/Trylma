@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server
+class Server
 {
     private ServerSocket serverSocket;
     private List<Player> players;
@@ -28,23 +28,48 @@ public class Server
 
     void createMatch(int playersNum, int botsNum)
     {
-        //TODO tymczasowo testowane jest połączenie z jednym klientem
+        //TODO tymczasowo testowany jest mecz z jednym klientem
         gameMaster = new GameMaster(new BasicMovementStrategy(), new ClassicBoardFactory());
         commandBuilder = new CommandBuilder();
         players = new ArrayList<>();
+
+        // Utworzenie planszy dla 1 gracza
+        gameMaster.initializeBoard( playersNum );
+
         try
         {
             System.out.println("Oczekiwanie na klienta");
             players.add(new RealPlayer(serverSocket.accept(), PlayerColor.RED ));
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             System.out.println("Wystąpił błąd przy próbie połączenia z klientem");
         }
 
         System.out.println("Połączono z klientem");
-        System.out.println("Nasłuchiwanie klienta...");
+        System.out.println( "Wysyłanie powitania..." );
+        players.get( 0 ).sendCommand( "WELCOME RED" );
+        System.out.println( "Wysyłanie planszy..." );
+        try
+        {
+            Thread.sleep( 2000 );
+        }
+        catch( Exception ignore ){}
+        players.get( 0 ).sendCommand( "BOARD " + gameMaster.getBoardAsString() );
 
+        while( true )
+        {
+            try
+            {
 
+                String response = players.get( 0 ).readResponse();
+                System.out.println( "Odebrano: " + response );
+            }
+            catch( Exception ignored )
+            {
+                break;
+            }
+        }
     }
 
     private void startMatch() throws Exception

@@ -6,6 +6,7 @@ import coord.Coord;
 import shared.*;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Player
 {
@@ -13,40 +14,61 @@ public class Player
     private PlayerColor color;
     private Coord selected;
     private CommunicationManager communicationManager;
+    private Consumer<Boolean> blockGUI;
 
-    Player( CommunicationManager cm, Board board, PlayerColor color )
+    private boolean turnActive;
+
+    Player( CommunicationManager cm, Board board, Consumer<Boolean> blockGUI ) throws Exception
     {
         this.communicationManager = cm;
         this.board = board;
-        this.color = color;
+        this.color = PlayerColor.RED;
+        this.blockGUI = blockGUI;
+
+        readColor();
+        turnActive = false;
+
+        listen();
     }
 
     /**
-     * Oznaczenie pola jako aktywnego. Aktywne pole jest podświetlone i
-     * wyświetlane są do niego sugerowane miejsca skoków.
+     * Obsługa kliknięcia w pole. Zaznaczanie pola, wykonywanie skoków itp.
      */
     void selectPiece( int x, int y )
     {
-        // jeśli kliknięto w pionka swojego koloru, to go zaznacz
+        // jeśli kliknięto w pionka swojego koloru
         if( !board.isEmpty( x, y ) && board.getColor( x, y ).equals( color ) )
         {
-            // zaznaczenie pionka
-            board.select( x, y );
-            selected = new Coord( x, y );
-            // podświetlenie pól, na które można skoczyć
-            markPossibleJumps( x, y );
+            // kliknięto w zaznaczonego już pionka. Zakończ turę
+            if( selected != null && selected.getX() == x && selected.getY() == y )
+            {
+                // odznaczanie pól
+                board.deselect();
+                selected = null;
+
+                communicationManager.writeLine( "SKIP" );
+                listen();
+            }
+            else
+            {
+                // zaznaczenie pionka
+                board.select( x, y );
+                selected = new Coord( x, y );
+                // podświetlenie pól, na które można skoczyć
+                markPossibleJumps( x, y );
+            }
+
         }
-        // jakiś pionek jest zaznaczony i kliknięto w puste pole (wykonanie skoku)
+        // jakiś jakiś pionek jest zaznaczony i kliknięto w puste pole (wykonanie skoku)
         else if( selected != null && board.isEmpty( x, y ) )
         {
-            moveSelectedTo( x, y );
-
             // odznaczanie pól
             board.deselect();
             selected = null;
 
-            // TODO musi być asynchroniczna (?)
-            waitAndListen();
+            moveSelectedTo( x, y );
+
+            listen();
         }
         else // kliknięto gdzieś tam, odznacz pole (jeśli było zaznaczone)
         {
@@ -78,13 +100,65 @@ public class Player
     }
 
     /**
+     * Funkcja asynchronicznie wywołuje funkcję listenAndExecute()
+     */
+    private void listen()
+    {
+        blockGUI.accept( true );
+        Thread thread = new Thread( this:: listenAndExecute );
+        thread.setDaemon( true );
+        thread.start();
+    }
+
+    /**
      * Nasłuchuje wszystkich przycodzących komunikatów. Nasłuchiwanie się
      * kończy, gdy zostanie odebrany komunikat 'YOU'
      */
-    private void waitAndListen()
+    private void listenAndExecute()
     {
-        // TODO implement
-        System.out.println("Czekanie...");
+        do
+        {
+            String line = null;
+            try
+            {
+                line = communicationManager.readLine();
+            }
+            catch( Exception e )
+            {
+                System.out.println( "Utracono połączenie z serwerem: " + e.getMessage() );
+                System.exit( -1 );
+            }
+
+            Response[] responses = ResponseInterpreter.getResponses( line );
+
+            for( Response response : responses )
+            {
+                switch( response.getCode() )
+                {
+                case "YOU":
+                    turnActive = true;
+                    break;
+                case "BOARD":
+                    loadBoard( response );
+                    break;
+                case "END":
+                    System.out.println("Zakończyłeś na miejscu " + response.getNumbers()[0]);
+                    break;
+                case "OK":
+                    System.out.println( "Ruch poprawny" );
+                    break;
+                case "NOK":
+                    System.out.println( "Ruch NIE poprawny" );
+                    break;
+                case "STOP":
+                    turnActive = false;
+                    break;
+                }
+            }
+
+        } while( !turnActive ); // nasłuchuj dopóki nie nastąpi twoja tura
+
+        blockGUI.accept( false );
     }
 
     /**
@@ -112,6 +186,45 @@ public class Player
             if( result != 0 )
                 board.mark( coord.getX(), coord.getY() );
         }
+    }
+
+    private void readColor() throws Exception
+    {
+        String line = communicationManager.readLine();
+        Response[] responses = ResponseInterpreter.getResponses( line );
+        Response response;
+        if( responses.length != 1
+                || !responses[ 0 ].getCode().equals( "WELCOME" )
+                || responses[ 0 ].getWords().length != 1 )
+        {
+            throw new Exception( "Otrzymano niepoprawny komunikat: " + line );
+        }
+
+        color = PlayerColor.valueOf( responses[ 0 ].getWords()[ 0 ] );
+
+        System.out.println( "Jestem graczem: " + color.toString() );
+    }
+
+    private void loadBoard( Response response )
+    {
+        if( response.getCode().equals( "BOARD" ) )
+        {
+            // czyszczenie planszy
+            board.clearBoard();
+
+            // wypełnianie planszy pionkami
+            int coordNum = 0;
+            for( String word : response.getWords() )
+            {
+                PlayerColor color = PlayerColor.valueOf( word );
+                int x = response.getNumbers()[ coordNum ];
+                int y = response.getNumbers()[ coordNum+1 ];
+
+                board.addPiece( x, y, color );
+                coordNum += 2;
+            }
+        }
+
     }
 }
 
