@@ -1,5 +1,7 @@
 package main;
 
+import board.Board;
+import board.Field;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -42,12 +44,12 @@ public class Controller
         if( communicationManager != null )
             System.out.println("Połączono z serwerem");
 
-        // Tymczasowe wstawienie pionków na planszę do testowania
-        fields.get( 150 ).setColor( PlayerColor.RED );
-        fields.get( 143 ).setColor( PlayerColor.RED );
-        fields.get( 151 ).setColor( PlayerColor.GREEN );
-
         board = new Board( fields );
+
+        // TODO Tymczasowe wstawienie pionków na planszę do testowania
+        board.addPiece( 5, 7, PlayerColor.RED );
+        board.addPiece( 6, 7, PlayerColor.ORANGE );
+
         player = new Player( communicationManager, board, PlayerColor.RED );
     }
 
