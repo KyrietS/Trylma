@@ -30,25 +30,25 @@ class ClassicBoardTest
     void addPieceTest()
     {
         ClassicBoard classicBoard = new ClassicBoard();
-        //początkowo pole ma currentColor = "none"
+        //początkowo pole ma currentColor = NONE
         classicBoard.setField(1, 1, new Field( PlayerColor.NONE, PlayerColor.NONE, PlayerColor.NONE, true));
         try
         {
-            //dodajemy pionek koloru [G]reen
-            classicBoard.addPiece(1, 1, PlayerColor.G);
+            //dodajemy pionek koloru GREEN
+            classicBoard.addPiece(1, 1, PlayerColor.GREEN );
         } catch (UnplayableFieldException ex)
         {
             fail();
         }
-        assertEquals(classicBoard.getField(1, 1).getCurrentColor(), PlayerColor.G);
+        assertEquals(classicBoard.getField(1, 1).getCurrentColor(), PlayerColor.GREEN );
     }
 
     @Test
     void removePieceTest()
     {
         ClassicBoard classicBoard = new ClassicBoard();
-        //początkowo pole ma currentColor = "G"
-        classicBoard.setField(1, 1, new Field(PlayerColor.G, PlayerColor.NONE, PlayerColor.NONE, true));
+        //początkowo pole ma currentColor = GREEN
+        classicBoard.setField(1, 1, new Field(PlayerColor.GREEN, PlayerColor.NONE, PlayerColor.NONE, true));
         try
         {
             //usuwamy pionek

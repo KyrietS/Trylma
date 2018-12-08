@@ -35,7 +35,7 @@ public class Server
         try
         {
             System.out.println("Oczekiwanie na klienta");
-            players.add(new RealPlayer(serverSocket.accept(), PlayerColor.R));
+            players.add(new RealPlayer(serverSocket.accept(), PlayerColor.RED ));
         } catch (Exception e)
         {
             System.out.println("Wystąpił błąd przy próbie połączenia z klientem");

@@ -50,22 +50,22 @@ class Field implements IField
         case NONE:
             circle.setFill( Color.WHITE );
             return;
-        case R:
+        case RED:
             stops[ 1 ] = new Stop( 1, Color.RED );
             break;
-        case G:
+        case GREEN:
             stops[ 1 ] = new Stop( 1, Color.GREEN );
             break;
-        case Y:
+        case YELLOW:
             stops[ 1 ] = new Stop( 1, Color.YELLOW );
             break;
-        case B:
+        case BLUE:
             stops[ 1 ] = new Stop( 1, Color.BLUE );
             break;
-        case O:
+        case ORANGE:
             stops[ 1 ] = new Stop( 1, Color.ORANGE );
             break;
-        case V:
+        case VIOLET:
             stops[ 1 ] = new Stop( 1, Color.VIOLET );
             break;
         default:
