@@ -46,6 +46,7 @@ public class Field
         {
         case NONE:
             circle.setFill( Color.WHITE );
+            this.color = PlayerColor.NONE;
             return;
         case RED:
             stops[ 1 ] = new Stop( 1, Color.RED );

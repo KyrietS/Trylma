@@ -16,10 +16,31 @@ class GameMaster
         boardFactory = bf;
     }
 
-    void initializeBoard( int numberOfPlayers )
+    /**
+     * Tworzy planszę początkową na 'numberOfPlayers' graczy.
+     * @param numberOfPlayers liczba graczy w meczu
+     * @return tablica kolorów do przydzielenia
+     */
+    PlayerColor[] initializeBoard( int numberOfPlayers )
     {
         board = boardFactory.createBoard( numberOfPlayers );
+        switch( numberOfPlayers )
+        {
+        case 1:
+            return new PlayerColor[]{ PlayerColor.RED };
+        case 2:
+            return new PlayerColor[]{ PlayerColor.RED, PlayerColor.GREEN };
+        case 3:
+            return new PlayerColor[]{ PlayerColor.RED, PlayerColor.BLUE, PlayerColor.YELLOW };
+        case 4:
+            return new PlayerColor[]{ PlayerColor.RED, PlayerColor.GREEN, PlayerColor.BLUE, PlayerColor.ORANGE };
+        case 6:
+            if( PlayerColor.values().length == 6 )
+                return PlayerColor.values();
+        }
+        throw new RuntimeException( "Podano nieprawidłową liczbę graczy: " + numberOfPlayers );
     }
+
 
     //weryfikuje poprawność ruchu z pola (x1,y1) na pole (x2,y2) na podstawie podanych zasad movementstrategy
     int verifyMove(int x1, int y1, int x2, int y2, AdditionalVerifyCondition[] additionalVerifyConditions)
