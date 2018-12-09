@@ -24,6 +24,11 @@ class Server
         }
     }
 
+    /**
+     * Utworzenie nowej planszy i przyłączenie odpowiedniej ilości graczy
+     * @param playersNum liczba prawdziwych graczy biorących udział w meczu
+     * @param botsNum liczba botów w meczu
+     */
     void createMatch(int playersNum, int botsNum)
     {
         if( playersNum + botsNum < 1 || playersNum+botsNum > PlayerColor.values().length-1 )
@@ -62,6 +67,10 @@ class Server
         System.out.println("Mecz zakończony");
     }
 
+    /**
+     * Główny algorytm przeprowadzający rozgrywkę z wieloma graczami.
+     * Dokładny opis działania, patrz: "Dokuemtacja drzewa decyzyjnego serwera"
+     */
     private void startMatch( List<Player> players )
     {
         System.out.println("Inicjalizacja meczu");
@@ -211,7 +220,7 @@ class Server
     private int getNextPlayer( List<Player> players, int activePlayer )
     {
         int nextPlayer = activePlayer;
-        boolean nextPlayerFinished = false;
+        boolean nextPlayerFinished;
         do
         {
             nextPlayer++;
@@ -241,139 +250,9 @@ class Server
         return nextPlayer;
     }
 
-    /*
-    private void startMatch() throws Exception
-    {
-        JumpStatusVerifyCondition jumpStatus = new JumpStatusVerifyCondition();
-        PreviousPawnVerifyCondition previousPawn = new PreviousPawnVerifyCondition();
-        AdditionalVerifyCondition[] conditions = {jumpStatus, previousPawn};
-        Response response;
-        int[] coords;
-        boolean isOver = false;
-
-        //wysyła wszystkim komunikat start i board
-        commandBuilder.addCommand("START");
-        commandBuilder.addCommand("BOARD", gameMaster.getBoardAsString());
-        sendToAll(commandBuilder.getCommand());
-
-        while (!isOver)
-        {
-            for (Player player : players)
-            {
-                if (isOver)
-                {
-                    break;
-                }
-                //reset
-                jumpStatus = new JumpStatusVerifyCondition();
-                previousPawn = new PreviousPawnVerifyCondition();
-                player.sendCommand("YOU");
-                do
-                {
-
-                    try
-                    {
-                        response = ResponseInterpreter.getResponses(players.get(0).readResponse())[0];
-                    } catch (Exception e)
-                    {
-                        System.out.println("Utracono połączenie z klientem");
-                        break;
-                    }
-                    //otrzymany komunikat == SKIP
-                    if (response.getCode().contentEquals("SKIP"))
-                    {
-                        //tworzy komendę STOP@BOARD i wysła aktywnemu graczowi
-                        commandBuilder = new CommandBuilder();
-                        commandBuilder.addCommand("STOP");
-                        commandBuilder.addCommand("BOARD", gameMaster.getBoardAsString());
-                        player.sendCommand(commandBuilder.getCommand());
-                        //wysyła wszystkim innym graczom komendę BOARD
-                        commandBuilder = new CommandBuilder();
-                        commandBuilder.addCommand("BOARD", gameMaster.getBoardAsString());
-                        sendToOthers(commandBuilder.getCommand(), player);
-                    } else if (response.getCode().contentEquals("MOVE"))
-                    {
-                        coords = response.getNumbers();
-                        //ustaw obecny pionek
-                        previousPawn.setCurrentXY(coords[2], coords[3]);
-                        jumpStatus.setStatus(gameMaster.verifyMove(coords[0], coords[1], coords[2], coords[3], conditions));
-                        switch (jumpStatus.getStatus())
-                        {
-                            //verify zawiódł , do debug
-                            case -1:
-                            {
-                                throw new RuntimeException();
-                            }
-                            // niepoprawny ruch, wyslij NOK
-                            case 0:
-                            {
-                                player.sendCommand("NOK");
-                                break;
-                            }
-                            //poprawny króki ruch
-                            case 1:
-                            {
-                                //wykonaj ruch na planszy
-                                gameMaster.makeMove(coords[0], coords[1], coords[2], coords[3]);
-
-                                //wyślij graczowi komunika OK STOP BOARD
-                                commandBuilder = new CommandBuilder();
-                                commandBuilder.addCommand("OK");
-                                commandBuilder.addCommand("STOP");
-                                commandBuilder.addCommand("BOARD", gameMaster.getBoardAsString());
-                                player.sendCommand(commandBuilder.getCommand());
-                                //wyślij reszcie graczy BOARD
-                                commandBuilder = new CommandBuilder();
-                                commandBuilder.addCommand("BOARD", gameMaster.getBoardAsString());
-                                sendToOthers(commandBuilder.getCommand(), player);
-                                break;
-                            }
-                            case 2:
-                            {
-
-                                //wykonaj ruch na planszy
-                                gameMaster.makeMove(coords[0], coords[1], coords[2], coords[3]);
-                                //ustaw poprzedni pionek
-                                previousPawn.setPreviousXY(coords[2], coords[3]);
-                                //wyślij graczowi komunika OK BOARD
-                                commandBuilder = new CommandBuilder();
-                                commandBuilder.addCommand("OK");
-                                commandBuilder.addCommand("BOARD", gameMaster.getBoardAsString());
-                                player.sendCommand(commandBuilder.getCommand());
-                                //wyślij reszcie graczy BOARD
-                                commandBuilder = new CommandBuilder();
-                                commandBuilder.addCommand("BOARD", gameMaster.getBoardAsString());
-                                sendToOthers(commandBuilder.getCommand(), player);
-                                break;
-                            }
-                            //debug
-                            default:
-                            {
-                                throw new RuntimeException();
-                            }
-                        }
-                        //sprawdzanie wygranej
-                        if (gameMaster.isWinner(player.getColor()))
-                        {
-                            //wysyłamy komunikat o zwycięstwie
-                            commandBuilder = new CommandBuilder();
-                            commandBuilder.addCommand("WIN", "1");
-                            player.sendCommand(commandBuilder.getCommand());
-
-                            commandBuilder = new CommandBuilder();
-                            commandBuilder.addCommand("WIN", "2");
-                            //ustawiamy koniec
-                            isOver = true;
-                            //break do while
-                            break;
-                        }
-                    }
-                } while (jumpStatus.getStatus() == 2);
-            }
-        }
-    }*/
-
-    //wysyła komendę wszystkim
+    /**
+     * Wysyła komendę do wszystkich graczy z tablicy 'players'
+     */
     private void sendToAll(String command)
     {
         for (Player temp : players)
@@ -382,7 +261,10 @@ class Server
         }
     }
 
-    //wysyła wszystkim oprócz jednego
+    /**
+     * Wysyła komendę do wszystkich graczy z tablicy 'players',
+     * pomijając gracza 'excluded'
+     */
     private void sendToOthers(String command, Player excluded)
     {
         for (Player temp : players)
