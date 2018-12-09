@@ -62,14 +62,14 @@ class BasicMovementStrategyTest
         assertEquals(0, ms.verifyMove(b, 2, 2, 1, 1, conditions));
         assertEquals(1, ms.verifyMove(b, 1, 1, 1, 2, conditions));
 
-        //niepoprawny krótki ruch - niespełnienoy JumpStatusCondition
+        //poprzedni ruch był skokiem, wymagamy skoku - niespełnienoy JumpStatusCondition
         jumpStatusVerifyCondition.setStatus(2);
         assertEquals(0, ms.verifyMove(b, 1, 1, 1, 2, conditions));
         assertEquals(0, ms.verifyMove(b, 1, 1, 2, 1, conditions));
 
-        //niepoprawny krótki ruch - niespełniony PreviousPawnVerifyCondition
+        //poprzedni ruch był skokiem, wymagamy skoku TYM SAMYM pionkiem - niespełniony PreviousPawnVerifyCondition
         previousPawnVerifyCondition.setCurrentXY(3, 3);
-        previousPawnVerifyCondition.setPreviousXY(1, 1);
+        previousPawnVerifyCondition.setPreviousXY(2, 2); // gdyby było (3, 3) to ruch byłby poprawny
         assertEquals(0, ms.verifyMove(b, 8, 8, 7, 10, conditions));
 
 

@@ -26,6 +26,11 @@ public abstract class Player
         return color;
     }
 
+    public void setFinished( boolean status )
+    {
+        this.finished = status;
+    }
+
     public boolean isFinished()
     {
         return finished;

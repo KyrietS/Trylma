@@ -62,11 +62,11 @@ public class Player
         // jakiś jakiś pionek jest zaznaczony i kliknięto w puste pole (wykonanie skoku)
         else if( selected != null && board.isEmpty( x, y ) )
         {
+            moveSelectedTo( x, y );
+
             // odznaczanie pól
             board.deselect();
             selected = null;
-
-            moveSelectedTo( x, y );
 
             listen();
         }
@@ -78,7 +78,7 @@ public class Player
     }
 
     /**
-     * Zleca serwerowi przesunięcie zaznaczonego pionka (celected)
+     * Zleca serwerowi przesunięcie zaznaczonego pionka (selected)
      * na pozycję (x, y)
      */
     private void moveSelectedTo( int x, int y )
@@ -88,7 +88,7 @@ public class Player
         int fromY = selected.getY();
 
         String msg = "MOVE " + fromX + " " + fromY + " " + x + " " + y;
-        //communicationManager.writeLine( msg );
+        communicationManager.writeLine( msg );
     }
 
     /**
@@ -143,6 +143,7 @@ public class Player
                     break;
                 case "END":
                     System.out.println("Zakończyłeś na miejscu " + response.getNumbers()[0]);
+                    turnActive = false;
                     break;
                 case "OK":
                     System.out.println( "Ruch poprawny" );
@@ -167,6 +168,7 @@ public class Player
      */
     private void markPossibleJumps( int x, int y )
     {
+        //TODO uwzględniać conditions
         JumpStatusVerifyCondition jumpStatusVerifyCondition = new JumpStatusVerifyCondition(0);
         PreviousPawnVerifyCondition previousPawnVerifyCondition = new PreviousPawnVerifyCondition();
         AdditionalVerifyCondition[] conditions = {jumpStatusVerifyCondition, previousPawnVerifyCondition};

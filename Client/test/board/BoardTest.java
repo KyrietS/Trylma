@@ -1,11 +1,13 @@
 package board;
 
+import javafx.application.Platform;
 import javafx.scene.shape.Circle;
 import org.junit.jupiter.api.Test;
 import shared.PlayerColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,9 +27,6 @@ class BoardTest
         Board board = createDummyBoard();
 
         assertTrue( board.isEmpty( 0, 0 ) );
-
-        board.addPiece( 0, 1, PlayerColor.RED );
-        assertFalse( board.isEmpty( 0, 1 ) );
     }
 
     @Test
@@ -44,9 +43,6 @@ class BoardTest
         Board board = createDummyBoard();
 
         assertEquals( PlayerColor.NONE, board.getColor( 1, 1 ) );
-
-        board.addPiece( 1, 1, PlayerColor.RED );
-        assertEquals( PlayerColor.RED, board.getColor( 1, 1 ) );
     }
 
     @Test
@@ -82,4 +78,5 @@ class BoardTest
 
         return board;
     }
+
 }

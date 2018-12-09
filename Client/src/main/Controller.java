@@ -116,20 +116,9 @@ public class Controller
         if( field == null )
             return;
 
-        // TODO Obsługa kliknięć w pole. Tymczasowo jest zmieniane wypełnienie przy kliknięciu.
-
         System.out.println( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
-        if( communicationManager != null )
-            communicationManager.writeLine( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
 
         player.selectPiece( field.getX(), field.getY() );
-
-        /*
-        if( field.isSelected() )
-            field.setSelected( false );
-        else
-            field.setSelected( true );
-            */
     }
 
     /**
