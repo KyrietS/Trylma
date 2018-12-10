@@ -46,8 +46,8 @@ class Server
         {
             try
             {
-                System.out.println( "Oczekiwanie na klienta nr " + (playersConnected+1) );
-                players.add( new RealPlayer( serverSocket.accept(), PlayerColor.RED ) );
+                System.out.println( "Oczekiwanie na gracza " + colors[playersConnected].toString() );
+                players.add( new RealPlayer( serverSocket.accept(), colors[ playersConnected ] ) );
 
                 // przywitaj nowego gracza nadaniem kolorka
                 PlayerColor color = colors[ playersConnected ];
