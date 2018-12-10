@@ -1,5 +1,8 @@
-package main;
+package movement;
 
+import serverboard.Board;
+import serverboard.ClassicBoard;
+import serverboard.Field;
 import org.junit.jupiter.api.Test;
 import shared.AdditionalVerifyCondition;
 import shared.JumpStatusVerifyCondition;

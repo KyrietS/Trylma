@@ -1,4 +1,4 @@
-package main;
+package serverboard;
 
 import shared.PlayerColor;
 
@@ -7,7 +7,7 @@ import shared.PlayerColor;
  */
 public class ClassicBoardFactory implements BoardFactory
 {
-    ClassicBoard board = new ClassicBoard();
+    private ClassicBoard board = new ClassicBoard();
 
     /**
      * Tworzy planszę (ClassicBoard) dla podanej liczby graczy
@@ -66,8 +66,8 @@ public class ClassicBoardFactory implements BoardFactory
         // Wypełnianie środkowej części planszy
 
         //zmienne pomocnicze do inicjalizacji pól
-        int[] beginnings = {1, 1, 2, 3, 3, 2, 2, 1, 1};
-        int[] endings = {13, 12, 12, 11, 11, 11, 12, 12, 13};
+        int[] beginnings = {5, 4, 4, 3, 3, 3, 4, 4, 5};
+        int[] endings = {9, 9, 10, 10, 11, 10, 10, 9, 9};
         //iteracja po j - rzędach
         for (int j = 5; j <= 13; j++)
         {

@@ -1,6 +1,9 @@
-package main;
+package serverboard;
 
 import org.junit.jupiter.api.Test;
+import serverboard.ClassicBoard;
+import serverboard.Field;
+import serverboard.UnplayableFieldException;
 import shared.IField;
 import shared.PlayerColor;
 

@@ -1,5 +1,6 @@
-package main;
+package movement;
 
+import serverboard.Board;
 import shared.AdditionalVerifyCondition;
 import shared.IBoard;
 

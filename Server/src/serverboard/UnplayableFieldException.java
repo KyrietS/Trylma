@@ -1,7 +1,7 @@
-package main;
+package serverboard;
 
 //Exception gdy próbujemy coś zrobić z niegrywalnymi polami (wypełniaczami)
-class UnplayableFieldException extends Exception
+public class UnplayableFieldException extends Exception
 {
 
 }

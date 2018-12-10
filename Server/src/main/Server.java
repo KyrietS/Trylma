@@ -1,5 +1,10 @@
 package main;
 
+import movement.BasicMovementStrategy;
+import serverboard.ClassicBoardFactory;
+import movement.GameMaster;
+import player.Player;
+import player.RealPlayer;
 import shared.*;
 
 import java.net.ServerSocket;

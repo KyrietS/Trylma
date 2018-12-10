@@ -1,4 +1,5 @@
-package main;
+package serverboard;
+
 
 import shared.IBoard;
 import shared.IField;
@@ -16,7 +17,7 @@ public abstract class Board implements IBoard
     }
 
     //Dodaje pionek(ustawia kolor) o podanym kolorze na pole (x,y)
-    void addPiece(int x, int y, PlayerColor color) throws UnplayableFieldException
+    public void addPiece(int x, int y, PlayerColor color) throws UnplayableFieldException
     {
         if (fields[x][y].isPlayable())
         {
@@ -27,12 +28,18 @@ public abstract class Board implements IBoard
         }
     }
 
-    //Usuwa pionek(kolor) z pola (x,y)
-    void removePiece(int x, int y) throws UnplayableFieldException
+    /**
+     * Usuwa pionek z pola (x,y)
+     */
+
+    public void removePiece(int x, int y) throws UnplayableFieldException
     {
         if (fields[x][y].isPlayable())
         {
-            fields[x][y].setCurrentColor(PlayerColor.NONE);
+            // TODO CHECK UNEXPECTED BEHAVIOR
+            //fields[x][y].setCurrentColor(PlayerColor.NONE);
+            setField(x, y, new Field(PlayerColor.NONE, fields[x][y].getNativeColor(), fields[x][y].getTargetColor(), true));
+
         } else
         {
             throw new UnplayableFieldException();
@@ -40,7 +47,7 @@ public abstract class Board implements IBoard
     }
 
     //Sprawdza czy pole (x,y) jest puste
-    boolean isEmpty(int x, int y) throws UnplayableFieldException
+    public boolean isEmpty(int x, int y) throws UnplayableFieldException
     {
         if (fields[x][y].isPlayable())
         {
@@ -52,7 +59,7 @@ public abstract class Board implements IBoard
     }
 
     //Zwraca kolor pola (x,y)
-    PlayerColor getColor(int x, int y) throws UnplayableFieldException
+    public PlayerColor getColor(int x, int y) throws UnplayableFieldException
     {
         if (fields[x][y].isPlayable())
         {
@@ -81,7 +88,7 @@ public abstract class Board implements IBoard
         }
     }
 
-    void setField(int x, int y, Field f)
+    public void setField(int x, int y, Field f)
     {
         if (x < 1 || y < 1 || x > columns || y > rows)
         {

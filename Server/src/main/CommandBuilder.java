@@ -1,11 +1,9 @@
 package main;
 
-//TODO implement
+
 class CommandBuilder
 {
     private StringBuilder command;
-    private String[] possible = {"WELCOME", "START", "OK", "NOK", "YOU", "STOP", "END", "BOARD"};
-
 
     CommandBuilder()
     {
