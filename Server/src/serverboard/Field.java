@@ -3,10 +3,22 @@ package serverboard;
 import shared.IField;
 import shared.PlayerColor;
 
+/**
+ * Reprezentuje pojedyncze pole i pionka na nim stojącego
+ */
 public class Field implements IField
 {
+    /**
+     * kolor pionka na polu
+     */
     private PlayerColor currentColor;
+    /**
+     * kolor bazy startowej
+     */
     private PlayerColor nativeColor;
+    /**
+     * kolor mety
+     */
     private PlayerColor targetColor;
     private boolean playable;
 

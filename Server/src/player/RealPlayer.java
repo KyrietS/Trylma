@@ -4,6 +4,9 @@ import shared.PlayerColor;
 
 import java.net.Socket;
 
+/**
+ * Reprezentuje realnego gracza (nie bota) na serwerze
+ */
 public class RealPlayer extends Player
 {
     private CommunicationManager communicationManager;

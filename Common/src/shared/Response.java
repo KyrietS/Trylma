@@ -1,5 +1,8 @@
 package shared;
 
+/**
+ * Klasa reprezentuje komunikaty pomiędzy serwerem a klientem
+ */
 public class Response
 {
     private String code;
@@ -17,10 +20,12 @@ public class Response
     {
         return code;
     }
+
     public int[] getNumbers()
     {
         return numbers;
     }
+
     public String[] getWords()
     {
         return words;

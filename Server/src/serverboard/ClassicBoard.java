@@ -2,7 +2,9 @@ package serverboard;
 
 import shared.PlayerColor;
 
-//klasyczny board - 6 ramienna gwiazda w której każde ramię ma 10 pól a wewnętrzny sześciokąt - 61 pól
+/**
+ * Reprezentuje klasyczną planszę - 6 ramienna gwiazda w której każde ramię ma 10 pól a wewnętrzny sześciokąt - 61 pól
+ */
 public class ClassicBoard extends Board
 {
     public ClassicBoard()
@@ -20,8 +22,9 @@ public class ClassicBoard extends Board
         }
     }
 
-    /*zwraca string który informuje o kolorze i położeniu pionków
-        string jest w formacie KOLOR X Y KOLOR X Y KOLOR X Y ... KOLOR X Y
+    /**
+     * zwraca string który informuje o kolorze i położeniu pionków
+     *  string jest w formacie KOLOR X Y KOLOR X Y KOLOR X Y ... KOLOR X Y
      */
     @Override
     public String getAsString()
@@ -52,6 +55,9 @@ public class ClassicBoard extends Board
         return stringBuilder.toString();
     }
 
+    /**
+     * Sprawdza czy gracz o podanym kolorze wygrał
+     */
     @Override
     public boolean isWinner(PlayerColor color)
     {

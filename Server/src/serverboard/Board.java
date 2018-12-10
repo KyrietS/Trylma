@@ -5,6 +5,9 @@ import shared.IBoard;
 import shared.IField;
 import shared.PlayerColor;
 
+/**
+ * Reprezentuje planszę na której odbywa się rozgrywka
+ */
 public abstract class Board implements IBoard
 
 {
@@ -16,7 +19,9 @@ public abstract class Board implements IBoard
 
     }
 
-    //Dodaje pionek(ustawia kolor) o podanym kolorze na pole (x,y)
+    /**
+     * Dodaje pionek o podanym kolorze na pole (x,y)
+     */
     public void addPiece(int x, int y, PlayerColor color) throws UnplayableFieldException
     {
         if (fields[x][y].isPlayable())
@@ -31,7 +36,6 @@ public abstract class Board implements IBoard
     /**
      * Usuwa pionek z pola (x,y)
      */
-
     public void removePiece(int x, int y) throws UnplayableFieldException
     {
         if (fields[x][y].isPlayable())
@@ -46,19 +50,10 @@ public abstract class Board implements IBoard
         }
     }
 
-    //Sprawdza czy pole (x,y) jest puste
-    public boolean isEmpty(int x, int y) throws UnplayableFieldException
-    {
-        if (fields[x][y].isPlayable())
-        {
-            return fields[x][y].getCurrentColor() == PlayerColor.NONE;
-        } else
-        {
-            throw new UnplayableFieldException();
-        }
-    }
+    /**
+     * Zwraca kolor pionka na polu (x,y)
+     */
 
-    //Zwraca kolor pola (x,y)
     public PlayerColor getColor(int x, int y) throws UnplayableFieldException
     {
         if (fields[x][y].isPlayable())
@@ -70,10 +65,14 @@ public abstract class Board implements IBoard
         }
     }
 
-    //Zwraca board w postaci stringa
+    /**
+     * Zwraca board w postaci stringa
+     */
     public abstract String getAsString();
 
-    //Sprawdza czy wszyskie pionki danego koloru są już w swoim celu
+    /**
+     * Sprawdza czy wszyskie pionki danego koloru są już w swoim celu (warunek zwycięstwa)
+     */
     public abstract boolean isWinner(PlayerColor color);
 
     @Override

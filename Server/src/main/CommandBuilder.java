@@ -1,6 +1,8 @@
 package main;
 
-
+/**
+ * Klasa odpowiedzialna za budowanie komunikatów wysyłanych do graczy
+ */
 class CommandBuilder
 {
     private StringBuilder command;
@@ -10,6 +12,9 @@ class CommandBuilder
         command = new StringBuilder();
     }
 
+    /**
+     * Dodaje dany kod do komendy i rozdziela go znakiem '@' od innych
+     */
     void addCommand(String code)
     {
         if (command.toString().isEmpty())
@@ -22,6 +27,9 @@ class CommandBuilder
         }
     }
 
+    /**
+     * Dodaje kod wraz z jego danymi do komendy
+     */
     void addCommand(String code, String data)
     {
         if (command.toString().isEmpty())
@@ -39,7 +47,9 @@ class CommandBuilder
 
     }
 
-
+    /**
+     * zwraca utworzoną komendę
+     */
     String getCommand()
     {
         return command.toString();
