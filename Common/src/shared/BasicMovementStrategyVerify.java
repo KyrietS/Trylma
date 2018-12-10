@@ -2,16 +2,17 @@ package shared;
 
 import static shared.PlayerColor.NONE;
 
-/*
-    klasa obsługująca weryfikację ruchów dla BasicMovementStrategy
-
+/**
+ Klasa obsługująca weryfikację ruchów dla BasicMovementStrategy
  */
 public class BasicMovementStrategyVerify
 {
-    /*
-        sprawdza czy ruch jest poprawny
-        zwraca 0 jeśli niepoprawny, 1 jeśli ruch pojedynczy, 2 jeśli ruch przesakujący (można wykonać kolejny ruch), -1 gdy wystąpił błąd
-        funkcja przystosowana do przyjęcia JumpStatusVerifyCondition i PreviousPawnVerifyCondition (w tej kolejności)
+    /**
+     * Weryfikuje czy dany ruch z pola (x1,y1) na (x2,y2) dla danej planszy jest poprawny
+     * Zwraca 0 jeżeli ruch był niepoprawny, 1 jeżeli był to poprawny ruch na przykegłe pole (ruch krótki), albo 2 gdy był to poprawny ruch przeskakujący lub -1 gdy wystąpił błąd
+     * Do poprawnego działania wykorzystuje tablicę 2 dodatkowych warunków: JumpStatusVerifyCondition oraz PreviousPawnVerifyCondition
+     * Funkcja musi przyjąć dokładnie te dwa warunki w podanej kolejności, w przeciwnym wypadku jej działanie będzie nieprzewidywalne i prawdopodobnie błędne
+     * (Funckja oddelegowana do kasy BasicMovementStrategyVerify)
      */
     public static int verifyMove(IBoard board, int x1, int y1, int x2, int y2, AdditionalVerifyCondition[] additionalVerifyConditions)
     {

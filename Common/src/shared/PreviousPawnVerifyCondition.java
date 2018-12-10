@@ -1,7 +1,13 @@
 package shared;
 
+/**
+ * Dodatkowy warunek do weryfikacji poprawności ruchu.
+ * Reprezentuje zasadę: "Po skoku można wykonać kolejny skok TYM SAMYM PIONKIEM"
+ * Przechowuje koordynaty pionka którym ostatnio ruszyliśmy i porównuje je do pionka którym chcemy ruszyć
+ */
 public class PreviousPawnVerifyCondition implements AdditionalVerifyCondition
 {
+
     private int currentX;
     private int currentY;
     private int previousX;
@@ -12,55 +18,14 @@ public class PreviousPawnVerifyCondition implements AdditionalVerifyCondition
 
     }
 
-    public PreviousPawnVerifyCondition(int currentX, int currentY, int previousX, int previousY)
-    {
-        this.currentX = currentX;
-        this.currentY = currentY;
-        this.previousX = previousX;
-        this.previousY = previousY;
-    }
+    /**
+     * zwraca true jeżeli koordynaty "poprzednie" różnią się od obecnych czyli wykonywany jest ruch innym pionkiem co poprzednio (nieprwidłowy)
+     */
 
-    //zwraca true jeżeli koordynaty "poprzednie" różnią się od obecnych
     @Override
     public boolean verify()
     {
         return currentX != previousX || currentY != previousY;
-    }
-
-
-    public void setCurrentX(int currentX)
-    {
-        this.currentX = currentX;
-    }
-
-    public int getCurrentY()
-    {
-        return currentY;
-    }
-
-    public void setCurrentY(int currentY)
-    {
-        this.currentY = currentY;
-    }
-
-    public int getPreviousX()
-    {
-        return previousX;
-    }
-
-    public void setPreviousX(int previousX)
-    {
-        this.previousX = previousX;
-    }
-
-    public int getPreviousY()
-    {
-        return previousY;
-    }
-
-    public void setPreviousY(int previousY)
-    {
-        this.previousY = previousY;
     }
 
     public void setCurrentXY(int x, int y)

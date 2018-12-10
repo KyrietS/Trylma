@@ -1,5 +1,8 @@
 package shared;
 
+/**
+ * Interfejs łączący implementację pól po stronie serwera i klienta
+ */
 public interface IField
 {
     /** Zwraca kolor pionka na polu */

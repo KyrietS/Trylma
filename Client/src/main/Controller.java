@@ -7,7 +7,6 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import shared.PlayerColor;
 
 import java.util.ArrayList;
 import java.util.List;
