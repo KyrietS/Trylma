@@ -1,4 +1,4 @@
-package main;
+package player;
 
 import shared.PlayerColor;
 
@@ -12,14 +12,9 @@ public abstract class Player
 
     }
 
-    Player( PlayerColor color)
-    {
-        this.color = color;
-    }
+    public abstract void sendCommand(String command);
 
-    abstract void sendCommand(String command);
-
-    abstract String readResponse() throws Exception;
+    public abstract String readResponse() throws Exception;
 
     public PlayerColor getColor()
     {

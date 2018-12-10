@@ -1,5 +1,7 @@
-package main;
+package movement;
 
+import serverboard.Board;
+import serverboard.UnplayableFieldException;
 import shared.AdditionalVerifyCondition;
 import shared.BasicMovementStrategyVerify;
 import shared.IBoard;

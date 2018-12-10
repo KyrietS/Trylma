@@ -1,11 +1,11 @@
-package main;
+package serverboard;
 
 import shared.PlayerColor;
 
 //klasyczny board - 6 ramienna gwiazda w której każde ramię ma 10 pól a wewnętrzny sześciokąt - 61 pól
 public class ClassicBoard extends Board
 {
-    ClassicBoard()
+    public ClassicBoard()
     {
         columns = 13;
         rows = 17;

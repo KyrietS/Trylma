@@ -1,21 +1,21 @@
-package main;
+package serverboard;
 
 import shared.IField;
 import shared.PlayerColor;
 
-class Field implements IField
+public class Field implements IField
 {
     private PlayerColor currentColor;
     private PlayerColor nativeColor;
     private PlayerColor targetColor;
     private boolean playable;
 
-    Field(boolean playable)
+    public Field(boolean playable)
     {
 
     }
 
-    Field(PlayerColor currentColor, PlayerColor nativeColor, PlayerColor targetColor, boolean playable)
+    public Field(PlayerColor currentColor, PlayerColor nativeColor, PlayerColor targetColor, boolean playable)
     {
         this.currentColor = currentColor;
         this.nativeColor = nativeColor;
@@ -40,20 +40,10 @@ class Field implements IField
         return nativeColor;
     }
 
-    void setNativeColor(PlayerColor nativeColor)
-    {
-        this.nativeColor = nativeColor;
-    }
-
     @Override
     public PlayerColor getTargetColor()
     {
         return targetColor;
-    }
-
-    void setTargetColor(PlayerColor targetColor)
-    {
-        this.targetColor = targetColor;
     }
 
     @Override
@@ -62,8 +52,4 @@ class Field implements IField
         return playable;
     }
 
-    void setPlayable(boolean playable)
-    {
-        this.playable = playable;
-    }
 }

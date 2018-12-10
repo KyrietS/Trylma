@@ -1,27 +1,27 @@
-package main;
+package player;
 
 import shared.PlayerColor;
 
 import java.net.Socket;
 
-class RealPlayer extends Player
+public class RealPlayer extends Player
 {
     private CommunicationManager communicationManager;
 
-    RealPlayer(Socket socket, PlayerColor color) throws Exception
+    public RealPlayer(Socket socket, PlayerColor color) throws Exception
     {
         this.color = color;
         communicationManager = new CommunicationManager(socket);
     }
 
     @Override
-    void sendCommand(String command)
+    public void sendCommand(String command)
     {
         communicationManager.writeLine( command );
     }
 
     @Override
-    String readResponse() throws Exception
+    public String readResponse() throws Exception
     {
         return communicationManager.readLine();
     }
