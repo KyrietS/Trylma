@@ -87,17 +87,22 @@ public class ClassicBoardFactory implements BoardFactory
     private void setGreenPlayer(boolean isColorInGame)
     {
         //jeżeli kolor ma być grywalny to pole ma CurrentColor GREEN, w przeciwnym wypadku NONE
-        Field field = isColorInGame ? new Field(PlayerColor.GREEN, PlayerColor.GREEN, PlayerColor.RED, true) : new Field(PlayerColor.NONE, PlayerColor.GREEN, PlayerColor.RED, true);
-        board.setField(7, 1, field);
-        board.setField(6, 2, field);
-        board.setField(7, 2, field);
-        board.setField(6, 3, field);
-        board.setField(7, 3, field);
-        board.setField(8, 3, field);
-        board.setField(5, 4, field);
-        board.setField(6, 4, field);
-        board.setField(7, 4, field);
-        board.setField(8, 4, field);
+        //Field field = isColorInGame ? new Field(PlayerColor.GREEN, PlayerColor.GREEN, PlayerColor.RED, true) : new Field(PlayerColor.NONE, PlayerColor.GREEN, PlayerColor.RED, true);
+        board.setField(7, 1, getGreenField(isColorInGame));
+        board.setField(6, 2, getGreenField(isColorInGame));
+        board.setField(7, 2, getGreenField(isColorInGame));
+        board.setField(6, 3, getGreenField(isColorInGame));
+        board.setField(8, 3, getGreenField(isColorInGame));
+        board.setField(7, 3, getGreenField(isColorInGame));
+        board.setField(5, 4, getGreenField(isColorInGame));
+        board.setField(6, 4, getGreenField(isColorInGame));
+        board.setField(7, 4, getGreenField(isColorInGame));
+        board.setField(8, 4, getGreenField(isColorInGame));
+    }
+
+    private Field getGreenField( boolean isColorInGame )
+    {
+        return isColorInGame ? new Field(PlayerColor.GREEN, PlayerColor.GREEN, PlayerColor.RED, true) : new Field(PlayerColor.NONE, PlayerColor.GREEN, PlayerColor.RED, true);
     }
 
     /**

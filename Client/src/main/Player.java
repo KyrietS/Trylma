@@ -188,6 +188,8 @@ public class Player
             if( result != 0 )
                 board.mark( coord.getX(), coord.getY() );
         }
+
+
     }
 
     private void readColor() throws Exception
