@@ -2,20 +2,29 @@ package main;
 
 import board.Board;
 import board.Field;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Controller
 {
     /** Referencja do panelu, w którym znajdują się pola typu Circle */
     @FXML
     private Pane boardPane;
+    @FXML
+    private Label infoBar;
 
 
     private List<Field> fields = new ArrayList<>();
@@ -31,30 +40,7 @@ public class Controller
     private void initialize()
     {
         loadFields();
-
-        try
-        {
-            System.out.println("Podłączanie do serwera...");
-            communicationManager = new CommunicationManager( "localhost", 4444 );
-        }
-        catch( Exception e )
-        {
-            System.out.println( "Błąd: " + e.getMessage() );
-        }
-        if( communicationManager != null )
-            System.out.println("Połączono z serwerem");
-
-        board = new Board( fields );
-
-        try
-        {
-            player = new Player( communicationManager, board, this::blockGUI );
-        }
-        catch( Exception e )
-        {
-            System.out.println("Problem z utworzeniem gracza: " + e.getMessage());
-        }
-
+        showAlert( "Połącz się z serwerem, aby zagrać" );
     }
 
     /**
@@ -118,6 +104,156 @@ public class Controller
         System.out.println( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
 
         player.selectPiece( field.getX(), field.getY() );
+    }
+
+    @FXML
+    private void onNewConnection()
+    {
+        // Create the custom dialog.
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Nowe połączenie");
+        dialog.setHeaderText("Nazwiązywanie nowego połączenia");
+
+        // Set the icon (must be included in the project).
+        //dialog.setGraphic(new ImageView(this.getClass().getResource("login.png").toString()));
+
+        // Set the button types.
+        ButtonType loginButtonType = new ButtonType("Połącz", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField ipAddressField = new TextField();
+        ipAddressField.setPromptText("adres IP hosta");
+        TextField portField = new TextField();
+        portField.setPromptText("port");
+        portField.setText("4444");
+
+
+        grid.add(new Label("IP:"), 0, 0);
+        grid.add(ipAddressField, 1, 0);
+        grid.add(new Label("Port:"), 0, 1);
+        grid.add(portField, 1, 1);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        loginButton.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        ipAddressField.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> ipAddressField.requestFocus());
+
+        // Convert the result to a username-password-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                return new Pair<>(ipAddressField.getText(), portField.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+        String host;
+        int port;
+        if( result.isPresent() )
+        {
+            Pair<String, String> r = result.get();
+            host = r.getKey();
+            try
+            {
+                port = Integer.parseInt( r.getValue() );
+            }
+            catch( Exception e )
+            {
+                Alert alert = new Alert( Alert.AlertType.ERROR);
+                alert.setTitle("Błąd");
+                alert.setHeaderText("Podano nieprawidłowy port");
+
+                alert.showAndWait();
+                return;
+            }
+            showAlert( "Podłączanie do serwera..." );
+            Platform.runLater( () -> connect( host, port ) );
+        }
+
+    }
+
+    @FXML
+    private void onExit()
+    {
+        Alert alert = new Alert( Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Potwierdzenie");
+        alert.setHeaderText("Czy na pewno chcesz wyjść");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK){
+            Platform.exit();
+        }
+    }
+
+    private void showError( String text )
+    {
+        Platform.runLater( () -> {
+            infoBar.setStyle( "-fx-background-color: red; -fx-alignment: center" );
+            infoBar.setTextFill( Color.WHITE );
+            infoBar.setText( text );
+        } );
+    }
+
+    private void showAlert( String text )
+    {
+        Platform.runLater( () -> {
+            infoBar.setStyle("-fx-background-color: orange; -fx-alignment: center");
+            infoBar.setTextFill( Color.WHITE );
+            infoBar.setText( text );
+        } );
+
+    }
+
+    private void showSuccess( String text )
+    {
+        Platform.runLater( () -> {
+            infoBar.setStyle( "-fx-background-color: green; -fx-alignment: center" );
+            infoBar.setTextFill( Color.WHITE );
+            infoBar.setText( text );
+        } );
+    }
+
+    private void connect( String host, int port )
+    {
+        try
+        {
+            communicationManager = new CommunicationManager( host, port );
+        }
+        catch( Exception e )
+        {
+            showError( e.getMessage() );
+            return;
+        }
+
+        //System.out.println("Połączono z serwerem");
+        //showSuccess( "Połączono z serwerem" );
+
+        board = new Board( fields );
+
+        try
+        {
+            player = new Player( communicationManager, board,
+                    this :: blockGUI, this :: showSuccess, this :: showAlert, this :: showError );
+        }
+        catch( Exception e )
+        {
+            System.out.println("Problem z utworzeniem gracza: " + e.getMessage());
+        }
     }
 
     /**

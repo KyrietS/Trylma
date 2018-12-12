@@ -3,6 +3,7 @@ package main;
 import board.Board;
 import board.BoardCommonAdapter;
 import coord.Coord;
+import javafx.application.Platform;
 import shared.*;
 
 import java.util.List;
@@ -15,18 +16,30 @@ public class Player
     private Coord selected;
     private CommunicationManager communicationManager;
     private Consumer<Boolean> blockGUI;
+    private Consumer<String> printSuccess;
+    private Consumer<String> printAlert;
+    private Consumer<String> printError;
 
     private boolean turnActive;
 
-    Player( CommunicationManager cm, Board board, Consumer<Boolean> blockGUI ) throws Exception
+    Player( CommunicationManager cm, Board board,
+            Consumer<Boolean> blockGUI,
+            Consumer<String> printSuccess,
+            Consumer<String> printAlert,
+            Consumer<String> printError ) throws Exception
     {
         this.communicationManager = cm;
         this.board = board;
         this.color = PlayerColor.RED;
         this.blockGUI = blockGUI;
 
+        this.printSuccess = printSuccess;
+        this.printAlert = printAlert;
+        this.printError = printError;
+
         readColor();
         turnActive = false;
+        printSuccess.accept( "Połączono. Oczekiwanie na pozostałych graczy..." );
 
         listen();
     }
@@ -46,7 +59,7 @@ public class Player
                 board.deselect();
                 selected = null;
 
-                communicationManager.writeLine( "SKIP" );
+                skipTurn();
                 listen();
             }
             else
@@ -94,9 +107,9 @@ public class Player
     /**
      * Wysyoła do serwera komunikat o zakończeniu tury
      */
-    public void skipTurn()
+    private void skipTurn()
     {
-        // TODO implement
+        communicationManager.writeLine( "SKIP" );
     }
 
     /**
@@ -125,8 +138,9 @@ public class Player
             }
             catch( Exception e )
             {
-                System.out.println( "Utracono połączenie z serwerem: " + e.getMessage() );
-                System.exit( -1 );
+                //System.out.println( "Utracono połączenie z serwerem: " + e.getMessage() );
+                printError.accept( "Utracono połączenie z serwerem" );
+                //System.exit( -1 );
             }
 
             Response[] responses = ResponseInterpreter.getResponses( line );
@@ -136,22 +150,25 @@ public class Player
                 switch( response.getCode() )
                 {
                 case "YOU":
+                    printSuccess.accept( "Twoja tura" );
                     turnActive = true;
                     break;
                 case "BOARD":
                     loadBoard( response );
                     break;
                 case "END":
-                    System.out.println("Zakończyłeś na miejscu " + response.getNumbers()[0]);
+                    printSuccess.accept( "Koniec meczu. Zajmujesz " + response.getNumbers()[ 0 ] + " miejsce" );
                     turnActive = false;
                     break;
                 case "OK":
                     System.out.println( "Ruch poprawny" );
                     break;
                 case "NOK":
+                    //printAlert.accept( "Ruch niepoprawny!" );
                     System.out.println( "Ruch NIE poprawny" );
                     break;
                 case "STOP":
+                    printAlert.accept( "Trwa tura innego gracza..." );
                     turnActive = false;
                     break;
                 }
