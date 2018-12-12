@@ -2,8 +2,8 @@ package main;
 
 import board.Board;
 import board.BoardCommonAdapter;
-import coord.Coord;
 import javafx.application.Platform;
+import shared.Coord;
 import shared.*;
 
 import java.util.List;
@@ -64,11 +64,13 @@ public class Player
             }
             else
             {
+                System.out.println("Pytam o CLUES");
                 // zaznaczenie pionka
                 board.select( x, y );
                 selected = new Coord( x, y );
-                // podświetlenie pól, na które można skoczyć
-                markPossibleJumps( x, y );
+                // poproś o pola, na które można skoczyć
+                askServerForClues( x, y );
+                listen();
             }
 
         }
@@ -146,6 +148,7 @@ public class Player
 
             for( Response response : responses )
             {
+                System.out.println( "Odebrano: " + response.getCode() );
                 switch( response.getCode() )
                 {
                 case "YOU":
@@ -154,6 +157,9 @@ public class Player
                     break;
                 case "BOARD":
                     loadBoard( response );
+                    break;
+                case "CLUES":
+                    loadClues( response );
                     break;
                 case "END":
                     printSuccess.accept( "Koniec meczu. Zajmujesz " + response.getNumbers()[ 0 ] + " miejsce" );
@@ -202,10 +208,15 @@ public class Player
         {
             result = BasicMovementStrategyVerify.verifyMove( commonBoard, x, y, coord.getX(), coord.getY(), conditions );
             if( result != 0 )
-                board.mark( coord.getX(), coord.getY() );
+                Platform.runLater(() -> board.mark( coord.getX(), coord.getY() ) );
         }
 
 
+    }
+
+    private void askServerForClues( int x, int y )
+    {
+        communicationManager.writeLine( "CLUES " + x + " " + y );
     }
 
     private void readColor() throws Exception
@@ -244,7 +255,31 @@ public class Player
                 coordNum += 2;
             }
         }
+    }
 
+    private void loadClues( Response response )
+    {
+        if( response.getCode().equals( "CLUES" ) )
+        {
+            Platform.runLater( () -> board.unmarkAll() );
+
+            int numbers[] = response.getNumbers();
+
+            System.out.print("Odebrano: ");
+            for( int n : numbers )
+            {
+                System.out.print( n + " " );
+            }
+            System.out.println("");
+
+            for( int i = 0; i < numbers.length - 1; i += 2 )
+            {
+
+                int x = numbers[ i ];
+                int y = numbers[ i+1 ];
+                Platform.runLater( () -> board.mark( x, y ) );
+            }
+        }
     }
 }
 

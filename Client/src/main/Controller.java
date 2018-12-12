@@ -129,6 +129,7 @@ public class Controller
 
         TextField ipAddressField = new TextField();
         ipAddressField.setPromptText("adres IP hosta");
+        ipAddressField.setText( "localhost" );
         TextField portField = new TextField();
         portField.setPromptText("port");
         portField.setText("4444");

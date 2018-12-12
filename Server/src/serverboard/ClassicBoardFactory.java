@@ -25,6 +25,11 @@ public class ClassicBoardFactory implements BoardFactory
 
         switch (numberOfPlayers)
         {
+            case 1: // plansza dla 1 gracza
+            {
+                setRedPlayer( true );
+                break;
+            }
             case 2: // plansza dla 2 graczy
             {
                 setRedPlayer(true);
@@ -58,7 +63,7 @@ public class ClassicBoardFactory implements BoardFactory
             }
             default:
             {
-                return null;
+                throw new RuntimeException( "Nieobsługiwana liczba graczy" );
             }
 
         }

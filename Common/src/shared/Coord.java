@@ -1,4 +1,4 @@
-package coord;
+package shared;
 
 /**
  * Klasa pomocnicza do przechowywania współrzędnych
