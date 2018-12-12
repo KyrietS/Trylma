@@ -131,16 +131,15 @@ public class Player
     {
         do
         {
-            String line = null;
+            String line;
             try
             {
                 line = communicationManager.readLine();
             }
             catch( Exception e )
             {
-                //System.out.println( "Utracono połączenie z serwerem: " + e.getMessage() );
                 printError.accept( "Utracono połączenie z serwerem" );
-                //System.exit( -1 );
+                return;
             }
 
             Response[] responses = ResponseInterpreter.getResponses( line );
