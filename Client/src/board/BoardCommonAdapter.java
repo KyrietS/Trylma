@@ -1,6 +1,6 @@
 package board;
 
-import coord.Coord;
+import shared.Coord;
 import shared.IBoard;
 import shared.IField;
 

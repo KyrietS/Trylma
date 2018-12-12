@@ -135,6 +135,27 @@ class Server
                     players.get( activePlayer ).sendCommand( "STOP" );
                     nextPlayer = true;
                 }
+                if( response.getCode().equals( "CLUES" ) )
+                {
+                    int x = response.getNumbers()[0];
+                    int y = response.getNumbers()[1];
+
+                    previousPawn.setCurrentXY( x, y );
+
+                    List<Coord> possibleMoves = gameMaster.getPossibleMovesForPos( x, y, conditions );
+                    StringBuilder sb = new StringBuilder();
+                    for( Coord c : possibleMoves )
+                    {
+                        if( !sb.toString().equals( "" ) )
+                            sb.append( " " );
+                        sb.append( c.getX() ).append( " " ).append( c.getY() );
+                    }
+                    commandBuilder = new CommandBuilder();
+                    commandBuilder.addCommand( "CLUES", sb.toString() );
+
+                    players.get( activePlayer ).sendCommand( commandBuilder.getCommand() );
+                    nextPlayer = false;
+                }
                 if( response.getCode().equals( "MOVE" ) )
                 {
                     int x1 = response.getNumbers()[ 0 ];

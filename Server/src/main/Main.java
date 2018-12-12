@@ -15,6 +15,6 @@ public class Main
             return;
         }
 
-        server.createMatch( 2, 0 );
+        server.createMatch( 1, 0 );
     }
 }

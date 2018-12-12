@@ -5,7 +5,12 @@ import serverboard.BoardFactory;
 import serverboard.ClassicBoard;
 import serverboard.UnplayableFieldException;
 import shared.AdditionalVerifyCondition;
+import shared.BasicMovementStrategyVerify;
+import shared.Coord;
 import shared.PlayerColor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Klasa reprezentuje mistrza gry, który pośredniczy pomiędzy serwerem a planszą
@@ -80,6 +85,21 @@ public class GameMaster
         {
             return null;
         }
+    }
+
+    public List<Coord> getPossibleMovesForPos( int x, int y, AdditionalVerifyCondition[] additionalVerifyConditions )
+    {
+        int result; // rezultat funkcji verifyMove (jeśli 0, to ruch niepoprawny)
+        List<Coord> possibleMoves = new ArrayList<>();
+        List<Coord> nearbyCoords = board.getNearbyCoords( x, y );
+        for( Coord coord : nearbyCoords )
+        {
+            result = verifyMove( x, y, coord.getX(), coord.getY(), additionalVerifyConditions );
+            if( result != 0 )
+                possibleMoves.add( coord );
+        }
+
+        return possibleMoves;
     }
 
 
