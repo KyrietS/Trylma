@@ -26,7 +26,6 @@ public class Controller
     @FXML
     private Label infoBar;
 
-
     private List<Field> fields = new ArrayList<>();
     private CommunicationManager communicationManager;
     private Board board;
@@ -39,43 +38,45 @@ public class Controller
     @FXML
     private void initialize()
     {
-        loadFields();
+        loadAllFieldsFromBoard();
         showAlert( "Połącz się z serwerem, aby zagrać" );
     }
 
     /**
      * Wczytuje pola do tablicy fields
      */
-    private void loadFields()
+    private void loadAllFieldsFromBoard()
     {
         int x = 1;  // Współrzędna x pola (kolumna)
         int y = 1;  // Współrzędna y pola (wiersz)
 
-        // Wczytywanie referencji i uzupełnianie nimi tablicy fields
         for( Node node : boardPane.getChildren() )
         {
-            if( node instanceof Circle )
-            {
-                // Dodaj nowe pole
-                fields.add( new Field( x, y, (Circle)node ) );
-                // Ustaw handler na dodane pole
-                node.setOnMouseClicked( this :: onFieldClick );
+            loadNodeAsField( node, x, y );
 
-                // Zmiana współrzędnych
-                if( x == 13 )
-                {
-                    x = 1;
-                    y++;
-                }
-                else
-                {
-                    x++;
-                }
-            }
-            else // Informacja dla programistów
+            // Zmiana współrzędnych
+            if( x == 13 )
             {
-                throw new RuntimeException( "Jeden z elementów wewnątrz Pane jest typu innego niż Circle" );
+                x = 1;
+                y++;
             }
+            else
+            {
+                x++;
+            }
+        }
+    }
+
+    private void loadNodeAsField( Node node, int x, int y )
+    {
+        if( node instanceof Circle )
+        {
+            fields.add( new Field( x, y, (Circle)node ) );
+            node.setOnMouseClicked( this :: onFieldClick );
+        }
+        else // Informacja dla programistów
+        {
+            throw new RuntimeException( "Jeden z elementów wewnątrz Pane jest typu innego niż Circle" );
         }
     }
 
@@ -84,108 +85,34 @@ public class Controller
      */
     private void onFieldClick( MouseEvent event )
     {
-        if( guiBlocked )
-            return;
+        boolean eventIsCircle = ( event.getSource() instanceof Circle );
 
-        // Ten handler jest przeznaczony tylko dla kliknięć w Circle
-        if( !(event.getSource() instanceof Circle ) )
-            return;
+        if( !guiBlocked && eventIsCircle )
+        {
+            Circle clickedCircleReference = (Circle)event.getSource();
 
-        // Pobierz referencję do Circle, w które kliknięto
-        Circle circle = (Circle)event.getSource();
-
-        // Pobierz Field, do którego przypisana jest referencja na kliknięte Circle
-        Field field = getFieldByCircleReference( circle );
-
-        // Funkcja powyżej powinna ZAWSZE odnaleźć pole. Zabezpieczenie to jest na wszelki wypadek.
-        if( field == null )
-            return;
-
-        System.out.println( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
-
-        player.selectPiece( field.getX(), field.getY() );
+            Field clickedField = getFieldByCircleReference( clickedCircleReference );
+            makeClickOnField( clickedField );
+        }
     }
 
-    @FXML
-    private void onNewConnection()
+    private Field getFieldByCircleReference( Circle circle )
     {
-        // Create the custom dialog.
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Nowe połączenie");
-        dialog.setHeaderText("Nazwiązywanie nowego połączenia");
-
-        // Set the icon (must be included in the project).
-        //dialog.setGraphic(new ImageView(this.getClass().getResource("login.png").toString()));
-
-        // Set the button types.
-        ButtonType loginButtonType = new ButtonType("Połącz", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-
-        // Create the username and password labels and fields.
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField ipAddressField = new TextField();
-        ipAddressField.setPromptText("adres IP hosta");
-        ipAddressField.setText( "localhost" );
-        TextField portField = new TextField();
-        portField.setPromptText("port");
-        portField.setText("4444");
-
-
-        grid.add(new Label("IP:"), 0, 0);
-        grid.add(ipAddressField, 1, 0);
-        grid.add(new Label("Port:"), 0, 1);
-        grid.add(portField, 1, 1);
-
-        // Enable/Disable login button depending on whether a username was entered.
-        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-        loginButton.setDisable(false);
-
-        // Do some validation (using the Java 8 lambda syntax).
-        ipAddressField.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
-
-        dialog.getDialogPane().setContent(grid);
-
-        // Request focus on the username field by default.
-        Platform.runLater(() -> ipAddressField.requestFocus());
-
-        // Convert the result to a username-password-pair when the login button is clicked.
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
-                return new Pair<>(ipAddressField.getText(), portField.getText());
-            }
-            return null;
-        });
-
-        Optional<Pair<String, String>> result = dialog.showAndWait();
-        String host;
-        int port;
-        if( result.isPresent() )
+        for( Field field : fields )
         {
-            Pair<String, String> r = result.get();
-            host = r.getKey();
-            try
-            {
-                port = Integer.parseInt( r.getValue() );
-            }
-            catch( Exception e )
-            {
-                Alert alert = new Alert( Alert.AlertType.ERROR);
-                alert.setTitle("Błąd");
-                alert.setHeaderText("Podano nieprawidłowy port");
-
-                alert.showAndWait();
-                return;
-            }
-            showAlert( "Podłączanie do serwera..." );
-            Platform.runLater( () -> connect( host, port ) );
+            if( field.circleEquals( circle ) )
+                return field;
         }
+        return null;
+    }
 
+    private void makeClickOnField( Field field )
+    {
+        if( field != null )
+        {
+            System.out.println( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
+            player.selectPiece( field.getX(), field.getY() );
+        }
     }
 
     @FXML
@@ -229,23 +156,32 @@ public class Controller
         } );
     }
 
-    private void connect( String host, int port )
+    private void connectAndPrepareFotMatch( String host, int port )
     {
         try
         {
-            communicationManager = new CommunicationManager( host, port );
+            createConnection( host, port );
+            createBoard();
+            createPlayer();
         }
         catch( Exception e )
         {
             showError( e.getMessage() );
-            return;
         }
+    }
 
-        //System.out.println("Połączono z serwerem");
-        //showSuccess( "Połączono z serwerem" );
+    private void createConnection( String host, int port ) throws Exception
+    {
+        communicationManager = new CommunicationManager( host, port );
+    }
 
+    private void createBoard()
+    {
         board = new Board( fields );
+    }
 
+    private void createPlayer() throws Exception
+    {
         try
         {
             player = new Player( communicationManager, board,
@@ -253,26 +189,92 @@ public class Controller
         }
         catch( Exception e )
         {
-            System.out.println("Problem z utworzeniem gracza: " + e.getMessage());
+            throw new Exception("Problem z utworzeniem gracza: " + e.getMessage());
         }
-    }
-
-    /**
-     * Zwraca referencję do pola, któremu odpowiada dany circle.
-     */
-    private Field getFieldByCircleReference( Circle circle )
-    {
-        for( Field field : fields )
-        {
-            if( field.circleEquals( circle ) )
-                return field;
-        }
-
-        return null;
     }
 
     private void blockGUI( boolean state )
     {
         this.guiBlocked = state;
+    }
+
+    /**
+     * Tworzenie nowego okna dialogowego na wpisanie parametrów połączenia
+     */
+    @FXML
+    private void onNewConnection()
+    {
+        // Dialog
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Nowe połączenie");
+        dialog.setHeaderText("Nazwiązywanie nowego połączenia");
+
+        // Przyciski
+        ButtonType connectButtonType = new ButtonType("Połącz", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(connectButtonType, ButtonType.CANCEL);
+
+        // Pola tekstowe
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField ipAddressField = new TextField();
+        ipAddressField.setPromptText("adres IP hosta");
+        ipAddressField.setText( "localhost" );              // ustawienie domyślne
+        TextField portField = new TextField();
+        portField.setPromptText("port");
+        portField.setText("4444");                          // ustawienie domyślne
+
+        grid.add(new Label("IP:"), 0, 0);
+        grid.add(ipAddressField, 1, 0);
+        grid.add(new Label("Port:"), 0, 1);
+        grid.add(portField, 1, 1);
+
+        // Zablokuj przycisk, gdy nie podano jednej z opcji
+        Node connectButton = dialog.getDialogPane().lookupButton(connectButtonType);
+        connectButton.setDisable(false);
+
+        ipAddressField.textProperty().addListener(
+                (observable, oldValue, newValue) -> connectButton.setDisable(newValue.trim().isEmpty())
+        );
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Domyślny focus na pole z IP
+        Platform.runLater( ipAddressField :: requestFocus );
+
+        // Przekonwertuj wprowadzone dane, aby dialog zwrócił je jako para
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == connectButtonType) {
+                return new Pair<>(ipAddressField.getText(), portField.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+
+        String host;
+        int port;
+        if( result.isPresent() )
+        {
+            Pair<String, String> r = result.get();
+            host = r.getKey();
+            try
+            {
+                port = Integer.parseInt( r.getValue() );
+            }
+            catch( Exception e )
+            {
+                Alert alert = new Alert( Alert.AlertType.ERROR);
+                alert.setTitle("Błąd");
+                alert.setHeaderText("Podano nieprawidłowy port");
+
+                alert.showAndWait();
+                return;
+            }
+            showAlert( "Podłączanie do serwera..." );
+            Platform.runLater( () -> connectAndPrepareFotMatch( host, port ) );
+        }
     }
 }
