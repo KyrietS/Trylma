@@ -10,29 +10,14 @@ class FieldCommonAdapterTest
 {
 
     @Test
-    void getCurrentColor()
+    void getColor()
     {
         Field field = new Field( 0, 0, new Circle() );
-        FieldCommonAdapter adapter = new FieldCommonAdapter( field );
 
-        assertEquals( PlayerColor.NONE, adapter.getCurrentColor() );
+        assertEquals( PlayerColor.NONE, field.getColor() );
 
         field.setColor( PlayerColor.VIOLET );
-        assertEquals( PlayerColor.VIOLET, adapter.getCurrentColor() );
-    }
-
-    @Test
-    void isPlayable()
-    {
-        Circle circle = new Circle();
-        circle.setDisable( true );
-        Field field = new Field( 0, 0, circle );
-        FieldCommonAdapter adapter = new FieldCommonAdapter( field );
-
-        assertFalse( adapter.isPlayable() );
-
-        circle.setDisable( false );
-        assertTrue( adapter.isPlayable() );
+        assertEquals( PlayerColor.VIOLET, field.getColor() );
     }
 
 }

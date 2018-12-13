@@ -1,4 +1,4 @@
-package shared;
+package movement;
 
 /**
  * Klasa wspomagająca dla MovementStrategy, umożliwia dodawanie dodatkowych warunków weryfikacji ruchu

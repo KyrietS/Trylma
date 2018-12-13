@@ -4,10 +4,7 @@ import serverboard.Board;
 import serverboard.ClassicBoard;
 import serverboard.Field;
 import org.junit.jupiter.api.Test;
-import shared.AdditionalVerifyCondition;
-import shared.JumpStatusVerifyCondition;
 import shared.PlayerColor;
-import shared.PreviousPawnVerifyCondition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

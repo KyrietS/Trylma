@@ -2,8 +2,6 @@ package serverboard;
 
 
 import shared.Coord;
-import shared.IBoard;
-import shared.IField;
 import shared.PlayerColor;
 
 import java.util.ArrayList;
@@ -12,7 +10,7 @@ import java.util.List;
 /**
  * Reprezentuje planszę na której odbywa się rozgrywka
  */
-public abstract class Board implements IBoard
+public abstract class Board
 
 {
     int columns, rows;
@@ -79,8 +77,7 @@ public abstract class Board implements IBoard
      */
     public abstract boolean isWinner(PlayerColor color);
 
-    @Override
-    public IField getField(int x, int y)
+    public Field getField(int x, int y)
     {
         if (x < 1 || y < 1 || x > columns || y > rows)
         {

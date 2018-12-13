@@ -142,7 +142,7 @@ public class Controller
 
         // Enable/Disable login button depending on whether a username was entered.
         Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-        loginButton.setDisable(true);
+        loginButton.setDisable(false);
 
         // Do some validation (using the Java 8 lambda syntax).
         ipAddressField.textProperty().addListener((observable, oldValue, newValue) -> {

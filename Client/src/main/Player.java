@@ -1,7 +1,6 @@
 package main;
 
 import board.Board;
-import board.BoardCommonAdapter;
 import javafx.application.Platform;
 import shared.Coord;
 import shared.*;
@@ -78,7 +77,6 @@ public class Player
         else if( selected != null && board.isEmpty( x, y ) )
         {
             moveSelectedTo( x, y );
-
             // odznaczanie pól
             board.deselect();
             selected = null;
@@ -182,36 +180,6 @@ public class Player
         } while( !turnActive ); // nasłuchuj dopóki nie nastąpi twoja tura
 
         blockGUI.accept( false );
-    }
-
-    /**
-     * Podświetla pola w pobliżu pionka (x, y), na które potencjalnie można skoczyć.
-     * Przed wykonaniem, usuwa wcześniejsze powietlenie (jeśli istniało)
-     */
-    private void markPossibleJumps( int x, int y )
-    {
-        //TODO uwzględniać conditions
-        JumpStatusVerifyCondition jumpStatusVerifyCondition = new JumpStatusVerifyCondition(0);
-        PreviousPawnVerifyCondition previousPawnVerifyCondition = new PreviousPawnVerifyCondition();
-        AdditionalVerifyCondition[] conditions = {jumpStatusVerifyCondition, previousPawnVerifyCondition};
-
-        // wyczyść obecne podświetlenie
-        board.unmarkAll();
-
-
-        // Utworzenie adaptera, aby użyć funkcji z Common
-        BoardCommonAdapter commonBoard = new BoardCommonAdapter( board );
-        List<Coord> nearbyCoords = commonBoard.getNearbyCoords( x, y );
-
-        int result; // rezultat funkcji verifyMove (jeśli 0, to ruch niepoprawny)
-        for( Coord coord : nearbyCoords )
-        {
-            result = BasicMovementStrategyVerify.verifyMove( commonBoard, x, y, coord.getX(), coord.getY(), conditions );
-            if( result != 0 )
-                Platform.runLater(() -> board.mark( coord.getX(), coord.getY() ) );
-        }
-
-
     }
 
     private void askServerForClues( int x, int y )
