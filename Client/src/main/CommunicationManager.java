@@ -8,19 +8,14 @@ import java.net.Socket;
 /**
  * Klasa obsługująca komunikację z serwerem.
  */
-public class CommunicationManager
+class CommunicationManager
 {
-    private int port;           // domyślnie 4444
-    private String host;        // domyślnie "localhost"
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
 
-    public CommunicationManager( String host, int port ) throws Exception
+    CommunicationManager( String host, int port ) throws Exception
     {
-        this.host = host;
-        this.port = port;
-
         try
         {
             socket = new Socket( host, port );
