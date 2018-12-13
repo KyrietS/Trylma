@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import shared.Coord;
 import shared.*;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class Player
@@ -49,13 +48,13 @@ public class Player
     void selectPiece( int x, int y )
     {
         // jeśli kliknięto w pionka swojego koloru
-        if( !board.isEmpty( x, y ) && board.getColor( x, y ).equals( color ) )
+        if( !board.isFieldEmpty( x, y ) && board.getColor( x, y ).equals( color ) )
         {
             // kliknięto w zaznaczonego już pionka. Zakończ turę
             if( selected != null && selected.getX() == x && selected.getY() == y )
             {
                 // odznaczanie pól
-                board.deselect();
+                board.deselectAndUnmarkAllFields();
                 selected = null;
 
                 skipTurn();
@@ -65,7 +64,7 @@ public class Player
             {
                 System.out.println("Pytam o CLUES");
                 // zaznaczenie pionka
-                board.select( x, y );
+                board.selectField( x, y );
                 selected = new Coord( x, y );
                 // poproś o pola, na które można skoczyć
                 askServerForClues( x, y );
@@ -74,18 +73,18 @@ public class Player
 
         }
         // jakiś jakiś pionek jest zaznaczony i kliknięto w puste pole (wykonanie skoku)
-        else if( selected != null && board.isEmpty( x, y ) )
+        else if( selected != null && board.isFieldEmpty( x, y ) )
         {
             moveSelectedTo( x, y );
             // odznaczanie pól
-            board.deselect();
+            board.deselectAndUnmarkAllFields();
             selected = null;
 
             listen();
         }
         else // kliknięto gdzieś tam, odznacz pole (jeśli było zaznaczone)
         {
-            board.deselect();
+            board.deselectAndUnmarkAllFields();
             selected = null;
         }
     }
@@ -209,7 +208,7 @@ public class Player
         if( response.getCode().equals( "BOARD" ) )
         {
             // czyszczenie planszy
-            board.clearBoard();
+            board.removeAllPieces();
 
             // wypełnianie planszy pionkami
             int coordNum = 0;
@@ -229,7 +228,7 @@ public class Player
     {
         if( response.getCode().equals( "CLUES" ) )
         {
-            Platform.runLater( () -> board.unmarkAll() );
+            Platform.runLater( () -> board.unmarkAllPossibleJumpTargets() );
 
             int numbers[] = response.getNumbers();
 
@@ -245,7 +244,7 @@ public class Player
 
                 int x = numbers[ i ];
                 int y = numbers[ i+1 ];
-                Platform.runLater( () -> board.mark( x, y ) );
+                Platform.runLater( () -> board.markFieldAsPossibleJumpTarget( x, y ) );
             }
         }
     }
