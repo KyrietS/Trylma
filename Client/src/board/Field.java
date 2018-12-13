@@ -13,7 +13,7 @@ public class Field
     private int x;                                  // Współrzędna X pola (kolumna)
     private int y;                                  // Współrzędna Y pola (wiersz)
     private Circle circle;                          // Referencja do odpowiadającego Circle w GUI
-    private PlayerColor color = PlayerColor.NONE;   // Kolor pionka na danym polu ("" oznacza pole puste)
+    private PlayerColor color = PlayerColor.NONE;   // Kolor pionka na danym polu
 
     public Field( int x, int y, Circle circle )
     {
@@ -22,32 +22,33 @@ public class Field
         this.circle = circle;
     }
 
-    /** Zwraca współrzędną X pola */
     public int getX()
     {
         return this.x;
     }
 
-    /** Zwraca współrzędną Y pola */
     public int getY()
     {
         return this.y;
     }
 
-    /**
-     * Ustawia na polu pionka o kolorze 'color'
-     * Uwaga: color="" oznacza, że na polu nie stoi zaden pionek
-     */
     void setColor( PlayerColor color )
+    {
+        this.color = color;
+        Stop[] gradientPhases = getProperGradient( color );
+        setGradient( gradientPhases );
+    }
+
+    private Stop[] getProperGradient( PlayerColor color )
     {
         Stop[] stops = { new Stop(0, Color.WHITE), null };
 
         switch( color )
         {
         case NONE:
-            circle.setFill( Color.WHITE );
             this.color = PlayerColor.NONE;
-            return;
+            stops[ 1 ] = new Stop( 1, Color.WHITE );
+            break;
         case RED:
             stops[ 1 ] = new Stop( 1, Color.RED );
             break;
@@ -68,68 +69,49 @@ public class Field
             break;
         default:
             throw new RuntimeException( "Podany kolor nie istnieje: '" + color + "'" );
-
         }
-        this.color = color;
-        RadialGradient gradient = new RadialGradient( 0, 0,
-                0.5, 0.5, 0.5, true, CycleMethod.NO_CYCLE, stops );
-        circle.setFill( gradient );
+        return stops;
     }
 
+    private void setGradient( Stop[] gradientStops )
+    {
+        RadialGradient gradient = new RadialGradient( 0, 0,
+                0.5, 0.5, 0.5, true, CycleMethod.NO_CYCLE, gradientStops );
+        circle.setFill( gradient );
+    }
+    
     PlayerColor getColor()
     {
         return color;
     }
 
-    /**
-     * Oznacza pole jako zaznaczone lub nie,
-     * lekko powiększając kółko
-     */
     void setSelected( boolean state )
     {
-        if( circle.isDisabled() )
-            return;
-
-        if( state )
+        if( !circle.isDisabled() )
         {
-            circle.setStrokeType( StrokeType.OUTSIDE );
+            if( state )
+                circle.setStrokeType( StrokeType.OUTSIDE ); // lekko powiększa kółko
+            else
+                circle.setStrokeType( StrokeType.INSIDE );
         }
-        else
-        {
-            circle.setStrokeType( StrokeType.INSIDE );
-        }
-
     }
 
-    /**
-     * Porównuje referencję do FX'owego Cirlce
-     */
     public boolean circleEquals( Circle circle )
     {
         return this.circle == circle;
     }
 
-    /**
-     * Ustawia podświetlenie pola
-     */
-    void setMarked( boolean state )
+    void markAsPossibleJumpTarget( boolean state )
     {
-        if( circle.isDisabled() )
-            return;
-
-        if( state && color == PlayerColor.NONE )
+        if( !circle.isDisabled() )
         {
-            circle.setFill( Paint.valueOf( "#47F2FF" ) );
-        }
-        else if( color == PlayerColor.NONE )
-        {
-            circle.setFill( Color.WHITE );
+            if( state && color == PlayerColor.NONE )
+                circle.setFill( Paint.valueOf( "#47F2FF" ) );
+            else if( color == PlayerColor.NONE )
+                circle.setFill( Color.WHITE );
         }
     }
 
-    /**
-     * Zwraca informację o tym, czy Circle powiązany z polem jest wyłączony (nieaktywny)
-     */
     boolean isDisabled()
     {
         return circle.isDisabled();

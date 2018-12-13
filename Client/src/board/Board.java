@@ -10,21 +10,14 @@ import java.util.List;
  */
 public class Board
 {
-    /** obecnie zaznaczone pole z pionkiem */
-    private Field selectedField = null;
-
-    /** wszystkie pola na planszy */
-    List<Field> fields;
+    private List<Field> fields;
 
     public Board( List<Field> fields )
     {
         this.fields = fields;
     }
 
-    /**
-     * Czyści całą planszę z pionków
-     */
-    public void clearBoard()
+    public void removeAllPieces()
     {
         for( Field field : fields )
         {
@@ -37,39 +30,37 @@ public class Board
      * Zaznaczenie pionka (pola) na pozycji (x, y).
      * Funkcja odznacza również uprzednio zaznaczone pole.
      */
-    public void select( int x, int y )
+    public void selectField( int x, int y )
     {
-        deselect();
-
+        deselectAllFields();
         Field field = getField( x, y );
+
         if( field != null )
         {
             field.setSelected( true );
-            selectedField = field;
         }
-
     }
 
-    /**
-     * Odznacza obecnie zaznaczone pole oraz wyłącza podświetlenie
-     * pól dookoła tego pola
-     */
-    public void deselect()
+    public void deselectAndUnmarkAllFields()
     {
-        if( selectedField != null )
+        deselectAllFields();
+        unmarkAllPossibleJumpTargets();
+    }
+
+    private void deselectAllFields()
+    {
+        for( Field field : fields )
+            field.setSelected( false );
+    }
+
+    public void unmarkAllPossibleJumpTargets()
+    {
+        for( Field field : fields )
         {
-            selectedField.setSelected( false );
-            selectedField = null;
-            unmarkAll();
+            field.markAsPossibleJumpTarget( false );
         }
     }
 
-    /**
-     * Dodaje pionek na pozycję (x, y) o kolorze color
-     * @param x pozycja x pola
-     * @param y pozycja y pola
-     * @param color kolor pionka do wstawienia w pole
-     */
     public void addPiece( int x, int y, PlayerColor color )
     {
         Field field = getField( x, y );
@@ -77,11 +68,7 @@ public class Board
             Platform.runLater( () -> field.setColor( color ) );
     }
 
-    /**
-     * Sprawdza czy na polu (x, y) nie stoi pionek
-     * @return false, gdy na polu stoi pionek, true gdy pole jest puste lub nie istnieje
-     */
-    public boolean isEmpty( int x, int y )
+    public boolean isFieldEmpty( int x, int y )
     {
         Field field = getField( x, y );
         if( field != null )
@@ -107,23 +94,12 @@ public class Board
      * Podświetla pole (x, y)
      * Używane do podświetlania pól, na które można skoczyć.
      */
-    public void mark( int x, int y )
+    public void markFieldAsPossibleJumpTarget( int x, int y )
     {
         Field field = getField( x, y );
         if( field != null )
         {
-            field.setMarked( true );
-        }
-    }
-
-    /**
-     * Wyłącza podświetlenie wszystkich pól na planszy.
-     */
-    public void unmarkAll()
-    {
-        for( Field field : fields )
-        {
-            field.setMarked( false );
+            field.markAsPossibleJumpTarget( true );
         }
     }
 
@@ -138,7 +114,6 @@ public class Board
             if( field.getX() == x && field.getY() == y )
                 return field;
         }
-
         return null;
     }
 }

@@ -1,13 +1,11 @@
 package board;
 
-import javafx.application.Platform;
 import javafx.scene.shape.Circle;
 import org.junit.jupiter.api.Test;
 import shared.PlayerColor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +16,7 @@ class BoardTest
     {
         Board board = createDummyBoard();
 
-        assertTrue( board.isEmpty( -1, -1 ) );
+        assertTrue( board.isFieldEmpty( -1, -1 ) );
     }
 
     @Test
@@ -26,7 +24,7 @@ class BoardTest
     {
         Board board = createDummyBoard();
 
-        assertTrue( board.isEmpty( 0, 0 ) );
+        assertTrue( board.isFieldEmpty( 0, 0 ) );
     }
 
     @Test
@@ -51,7 +49,7 @@ class BoardTest
         Board board = createDummyBoard();
 
         // Zaznaczenie nieistniejącego pola powinno nie rzucić wyjątku
-        board.select( -1, -1 );
+        board.selectField( -1, -1 );
     }
 
     @Test
@@ -60,7 +58,7 @@ class BoardTest
         Board board = createDummyBoard();
 
         // Podświetlenie nieistniejącego pola powinno nie rzucić wyjątku
-        board.mark( -1, -1 );
+        board.markFieldAsPossibleJumpTarget( -1, -1 );
     }
 
     private Board createDummyBoard()
