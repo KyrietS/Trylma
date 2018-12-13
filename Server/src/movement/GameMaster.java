@@ -4,8 +4,6 @@ import serverboard.Board;
 import serverboard.BoardFactory;
 import serverboard.ClassicBoard;
 import serverboard.UnplayableFieldException;
-import shared.AdditionalVerifyCondition;
-import shared.BasicMovementStrategyVerify;
 import shared.Coord;
 import shared.PlayerColor;
 

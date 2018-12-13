@@ -1,12 +1,11 @@
 package serverboard;
 
-import shared.IField;
 import shared.PlayerColor;
 
 /**
  * Reprezentuje pojedyncze pole i pionka na nim stojącego
  */
-public class Field implements IField
+public class Field
 {
     /**
      * kolor pionka na polu
@@ -35,7 +34,6 @@ public class Field implements IField
         this.playable = playable;
     }
 
-    @Override
     public PlayerColor getCurrentColor()
     {
         return currentColor;
@@ -46,19 +44,16 @@ public class Field implements IField
         this.currentColor = currentColor;
     }
 
-    @Override
     public PlayerColor getNativeColor()
     {
         return nativeColor;
     }
 
-    @Override
     public PlayerColor getTargetColor()
     {
         return targetColor;
     }
 
-    @Override
     public boolean isPlayable()
     {
         return playable;

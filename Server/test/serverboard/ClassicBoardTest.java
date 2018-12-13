@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import serverboard.ClassicBoard;
 import serverboard.Field;
 import serverboard.UnplayableFieldException;
-import shared.IField;
 import shared.PlayerColor;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +15,7 @@ class ClassicBoardTest
     void constructorTest()
     {
         ClassicBoard classicBoard = new ClassicBoard();
-        IField field = classicBoard.getField(5, 5);
+        Field field = classicBoard.getField(5, 5);
         assertFalse(field.isPlayable());
         assertNull(field.getCurrentColor());
         assertNull(field.getNativeColor());

@@ -1,4 +1,4 @@
-package shared;
+package movement;
 
 /**
  * Dodatkowy warunek do weryfikacji poprawności ruchu.

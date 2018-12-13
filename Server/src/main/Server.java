@@ -1,8 +1,7 @@
 package main;
 
-import movement.BasicMovementStrategy;
+import movement.*;
 import serverboard.ClassicBoardFactory;
-import movement.GameMaster;
 import player.Player;
 import player.RealPlayer;
 import shared.*;
@@ -139,21 +138,7 @@ class Server
                 {
                     int x = response.getNumbers()[0];
                     int y = response.getNumbers()[1];
-
-                    previousPawn.setCurrentXY( x, y );
-
-                    List<Coord> possibleMoves = gameMaster.getPossibleMovesForPos( x, y, conditions );
-                    StringBuilder sb = new StringBuilder();
-                    for( Coord c : possibleMoves )
-                    {
-                        if( !sb.toString().equals( "" ) )
-                            sb.append( " " );
-                        sb.append( c.getX() ).append( " " ).append( c.getY() );
-                    }
-                    commandBuilder = new CommandBuilder();
-                    commandBuilder.addCommand( "CLUES", sb.toString() );
-
-                    players.get( activePlayer ).sendCommand( commandBuilder.getCommand() );
+                    sendClues( activePlayer, x, y, conditions );
                     nextPlayer = false;
                 }
                 if( response.getCode().equals( "MOVE" ) )
@@ -214,6 +199,7 @@ class Server
                             System.out.println("Wykonano skok nad pionkiem");
                             // wysyłanie OK@BOARD do aktywnego gracza
                             commandBuilder = new CommandBuilder();
+
                             commandBuilder.addCommand( "OK" );
                             commandBuilder.addCommand( "BOARD", gameMaster.getBoardAsString() );
                             players.get( activePlayer ).sendCommand( commandBuilder.getCommand() );
@@ -298,5 +284,31 @@ class Server
             if (temp != excluded)
                 temp.sendCommand(command);
         }
+    }
+
+    private void sendClues( int activePlayer, int x, int y, AdditionalVerifyCondition[] conditions )
+    {
+
+        ((PreviousPawnVerifyCondition)conditions[1]).setCurrentXY( x, y );
+
+        List<Coord> possibleMoves = gameMaster.getPossibleMovesForPos( x, y, conditions );
+        String command = getCluesCommand( possibleMoves );
+
+        players.get( activePlayer ).sendCommand( command );
+    }
+
+    private String getCluesCommand( List<Coord> possibleMoves )
+    {
+        StringBuilder sb = new StringBuilder();
+        for( Coord c : possibleMoves )
+        {
+            if( !sb.toString().equals( "" ) )
+                sb.append( " " );
+            sb.append( c.getX() ).append( " " ).append( c.getY() );
+        }
+        CommandBuilder commandBuilder = new CommandBuilder();
+        commandBuilder.addCommand( "CLUES", sb.toString() );
+
+        return commandBuilder.getCommand();
     }
 }
