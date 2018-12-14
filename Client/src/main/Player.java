@@ -199,6 +199,9 @@ class Player
             printAlert.accept( "Trwa tura innego gracza..." );
             yourTurn = false;
             break;
+        case "ERROR":
+            System.out.println("Otrzymano komunikat ERROR");
+            printError.accept( "Przerwano mecz" );
         }
     }
 

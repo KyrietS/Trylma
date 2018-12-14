@@ -8,13 +8,11 @@ public class Main
         try
         {
             server = new Server( 4444 );
+            server.startMatch( 1, 0 );
         }
         catch(Exception e )
         {
             System.out.println( e.getMessage() );
-            return;
         }
-
-        server.createMatch( 1, 0 );
     }
 }

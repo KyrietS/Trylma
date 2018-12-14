@@ -18,12 +18,12 @@ public abstract class Player
     /**
      * Wysyła komendę do gracza
      */
-    public abstract void sendCommand(String command);
+    public abstract void sendCommand(String command) throws Exception;
 
     /**
      * Odczytuje komendę wysłaną przez gracza
      */
-    public abstract String readResponse() throws Exception;
+    public abstract String readResponse();
 
     public PlayerColor getColor()
     {
