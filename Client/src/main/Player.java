@@ -17,7 +17,7 @@ class Player
     private Consumer<String> printAlert;
     private Consumer<String> printError;
 
-    private boolean turnActive;
+    private boolean yourTurn;
 
     Player( CommunicationManager cm, Board board,
             Consumer<Boolean> blockGUI,
@@ -37,7 +37,7 @@ class Player
 
     void startMatch() throws Exception
     {
-        turnActive = false;
+        yourTurn = false;
         readPlayerColorFromServer();
         printSuccess.accept( "Połączono. Oczekiwanie na pozostałych graczy..." );
 
@@ -102,10 +102,6 @@ class Player
         blockGUIandReadResponses();
     }
 
-    /**
-     * Zleca serwerowi przesunięcie zaznaczonego pionka (selected)
-     * na pozycję (x, y)
-     */
     private void moveSelectedTo( int destX, int destY )
     {
         Coord selected = board.getCoordOfSelectedField();
@@ -149,9 +145,9 @@ class Player
             catch( Exception e ) // utracono połączenie z serwerem
             {
                 printError.accept( e.getMessage() );
-                break;
+                return;
             }
-        } while( !turnActive );
+        } while( !yourTurn );
 
         blockGUI.accept( false );
     }
@@ -180,7 +176,7 @@ class Player
         {
         case "YOU":
             printSuccess.accept( "Twoja tura" );
-            turnActive = true;
+            yourTurn = true;
             break;
         case "BOARD":
             loadBoard( response );
@@ -190,7 +186,7 @@ class Player
             break;
         case "END":
             printSuccess.accept( "Koniec meczu. Zajmujesz " + response.getNumbers()[ 0 ] + " miejsce" );
-            turnActive = false;
+            yourTurn = false;
             break;
         case "OK":
             System.out.println( "Ruch poprawny" );
@@ -201,7 +197,7 @@ class Player
             break;
         case "STOP":
             printAlert.accept( "Trwa tura innego gracza..." );
-            turnActive = false;
+            yourTurn = false;
             break;
         }
     }
