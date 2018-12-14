@@ -111,7 +111,7 @@ public class Controller
         if( field != null )
         {
             System.out.println( "Kliknięto w pole: (" + field.getX() + ", " + field.getY() + ")" );
-            player.selectPiece( field.getX(), field.getY() );
+            player.handleClickOnField( field.getX(), field.getY() );
         }
     }
 
@@ -156,18 +156,24 @@ public class Controller
         } );
     }
 
-    private void connectAndPrepareFotMatch( String host, int port )
+    private void connectAndStartMatch( String host, int port )
     {
         try
         {
             createConnection( host, port );
-            createBoard();
-            createPlayer();
+            startMatch();
         }
         catch( Exception e )
         {
             showError( e.getMessage() );
         }
+    }
+
+    private void startMatch() throws Exception
+    {
+        createBoard();
+        createPlayer();
+        player.startMatch();
     }
 
     private void createConnection( String host, int port ) throws Exception
@@ -274,7 +280,7 @@ public class Controller
                 return;
             }
             showAlert( "Podłączanie do serwera..." );
-            Platform.runLater( () -> connectAndPrepareFotMatch( host, port ) );
+            Platform.runLater( () -> connectAndStartMatch( host, port ) );
         }
     }
 }

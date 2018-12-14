@@ -1,6 +1,7 @@
 package board;
 
 import javafx.application.Platform;
+import shared.Coord;
 import shared.PlayerColor;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 public class Board
 {
     private List<Field> fields;
+    private Field selectedField;
 
     public Board( List<Field> fields )
     {
@@ -26,6 +28,20 @@ public class Board
         }
     }
 
+    public Coord getCoordOfSelectedField()
+    {
+        if( selectedField != null )
+        {
+            int x = selectedField.getX();
+            int y = selectedField.getY();
+            return new Coord( x, y );
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     /**
      * Zaznaczenie pionka (pola) na pozycji (x, y).
      * Funkcja odznacza również uprzednio zaznaczone pole.
@@ -33,11 +49,11 @@ public class Board
     public void selectField( int x, int y )
     {
         deselectAllFields();
-        Field field = getField( x, y );
+        selectedField = getField( x, y );
 
-        if( field != null )
+        if( selectedField != null )
         {
-            field.setSelected( true );
+            selectedField.setSelected( true );
         }
     }
 
@@ -45,6 +61,7 @@ public class Board
     {
         deselectAllFields();
         unmarkAllPossibleJumpTargets();
+        selectedField = null;
     }
 
     private void deselectAllFields()
