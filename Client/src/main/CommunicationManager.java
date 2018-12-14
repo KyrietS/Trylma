@@ -35,7 +35,14 @@ class CommunicationManager
      */
     synchronized String readLine() throws Exception
     {
-        return in.readLine();
+        try
+        {
+            return in.readLine();
+        }
+        catch( Exception e )
+        {
+            throw new Exception( "Utracono połączenie z serwerem" );
+        }
     }
 
     /**

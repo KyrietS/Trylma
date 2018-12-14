@@ -7,11 +7,10 @@ import shared.*;
 
 import java.util.function.Consumer;
 
-public class Player
+class Player
 {
     private Board board;
     private PlayerColor color;
-    private Coord selected;
     private CommunicationManager communicationManager;
     private Consumer<Boolean> blockGUI;
     private Consumer<String> printSuccess;
@@ -24,7 +23,7 @@ public class Player
             Consumer<Boolean> blockGUI,
             Consumer<String> printSuccess,
             Consumer<String> printAlert,
-            Consumer<String> printError ) throws Exception
+            Consumer<String> printError )
     {
         this.communicationManager = cm;
         this.board = board;
@@ -34,151 +33,177 @@ public class Player
         this.printSuccess = printSuccess;
         this.printAlert = printAlert;
         this.printError = printError;
+    }
 
-        readColor();
+    void startMatch() throws Exception
+    {
         turnActive = false;
+        readPlayerColorFromServer();
         printSuccess.accept( "Połączono. Oczekiwanie na pozostałych graczy..." );
 
-        listen();
+        blockGUIandReadResponses();
     }
 
     /**
      * Obsługa kliknięcia w pole. Zaznaczanie pola, wykonywanie skoków itp.
      */
-    void selectPiece( int x, int y )
+    void handleClickOnField( int x, int y )
     {
-        // jeśli kliknięto w pionka swojego koloru
-        if( !board.isFieldEmpty( x, y ) && board.getColor( x, y ).equals( color ) )
+        boolean clickedOwnPiece = !board.isFieldEmpty( x, y ) && board.getColor( x, y ).equals( color );
+        if( clickedOwnPiece )
         {
-            // kliknięto w zaznaczonego już pionka. Zakończ turę
-            if( selected != null && selected.getX() == x && selected.getY() == y )
-            {
-                // odznaczanie pól
-                board.deselectAndUnmarkAllFields();
-                selected = null;
-
-                skipTurn();
-                listen();
-            }
-            else
-            {
-                System.out.println("Pytam o CLUES");
-                // zaznaczenie pionka
-                board.selectField( x, y );
-                selected = new Coord( x, y );
-                // poproś o pola, na które można skoczyć
-                askServerForClues( x, y );
-                listen();
-            }
-
+            selectOwnPiece( x, y );
         }
-        // jakiś jakiś pionek jest zaznaczony i kliknięto w puste pole (wykonanie skoku)
-        else if( selected != null && board.isFieldEmpty( x, y ) )
+        else
         {
-            moveSelectedTo( x, y );
-            // odznaczanie pól
-            board.deselectAndUnmarkAllFields();
-            selected = null;
+            clickField( x, y );
+        }
+    }
 
-            listen();
+    private void selectOwnPiece( int x, int y )
+    {
+        Coord selected = board.getCoordOfSelectedField();
+        boolean clickedAlreadySelectedPiece = selected != null && selected.getX() == x && selected.getY() == y;
+
+        if( clickedAlreadySelectedPiece )
+        {
+            board.deselectAndUnmarkAllFields();
+            sendSkipRequest();
+        }
+        else
+        {
+            System.out.println("Pytam o CLUES");
+            board.selectField( x, y );
+            askServerForClues( x, y );
+        }
+
+        blockGUIandReadResponses();
+    }
+
+    private void clickField( int x, int y )
+    {
+        boolean clickedEmptyField = board.isFieldEmpty( x, y );
+        boolean isSomePieceSelected = board.getCoordOfSelectedField() != null;
+        if( clickedEmptyField && isSomePieceSelected )
+        {
+            sendMoveRequest( x, y );
         }
         else // kliknięto gdzieś tam, odznacz pole (jeśli było zaznaczone)
         {
             board.deselectAndUnmarkAllFields();
-            selected = null;
         }
+    }
+
+    private void sendMoveRequest( int x, int y )
+    {
+        moveSelectedTo( x, y );
+        board.deselectAndUnmarkAllFields();
+
+        blockGUIandReadResponses();
     }
 
     /**
      * Zleca serwerowi przesunięcie zaznaczonego pionka (selected)
      * na pozycję (x, y)
      */
-    private void moveSelectedTo( int x, int y )
+    private void moveSelectedTo( int destX, int destY )
     {
-        // wysyła propozycję ruchu do serwera
+        Coord selected = board.getCoordOfSelectedField();
+
         int fromX = selected.getX();
         int fromY = selected.getY();
 
-        String msg = "MOVE " + fromX + " " + fromY + " " + x + " " + y;
+        sendMoveRequest( fromX, fromY, destX, destY );
+    }
+
+    private void sendMoveRequest( int fromX, int fromY, int toX, int toY )
+    {
+        String msg = "MOVE " + fromX + " " + fromY + " " + toX + " " + toY;
         communicationManager.writeLine( msg );
     }
 
     /**
      * Wysyoła do serwera komunikat o zakończeniu tury
      */
-    private void skipTurn()
+    private void sendSkipRequest()
     {
         communicationManager.writeLine( "SKIP" );
     }
 
-    /**
-     * Funkcja asynchronicznie wywołuje funkcję listenAndExecute()
-     */
-    private void listen()
+    private void blockGUIandReadResponses()
     {
         blockGUI.accept( true );
-        Thread thread = new Thread( this:: listenAndExecute );
+        Thread thread = new Thread( this:: readResponsesUntilYourTurn );
         thread.setDaemon( true );
         thread.start();
     }
 
-    /**
-     * Nasłuchuje wszystkich przycodzących komunikatów. Nasłuchiwanie się
-     * kończy, gdy zostanie odebrany komunikat 'YOU'
-     */
-    private void listenAndExecute()
+    private void readResponsesUntilYourTurn()
     {
         do
         {
-            String line;
             try
             {
-                line = communicationManager.readLine();
+                waitForResponseAndExecute();
             }
-            catch( Exception e )
+            catch( Exception e ) // utracono połączenie z serwerem
             {
-                printError.accept( "Utracono połączenie z serwerem" );
-                return;
+                printError.accept( e.getMessage() );
+                break;
             }
-
-            Response[] responses = ResponseInterpreter.getResponses( line );
-
-            for( Response response : responses )
-            {
-                System.out.println( "Odebrano: " + response.getCode() );
-                switch( response.getCode() )
-                {
-                case "YOU":
-                    printSuccess.accept( "Twoja tura" );
-                    turnActive = true;
-                    break;
-                case "BOARD":
-                    loadBoard( response );
-                    break;
-                case "CLUES":
-                    loadClues( response );
-                    break;
-                case "END":
-                    printSuccess.accept( "Koniec meczu. Zajmujesz " + response.getNumbers()[ 0 ] + " miejsce" );
-                    turnActive = false;
-                    break;
-                case "OK":
-                    System.out.println( "Ruch poprawny" );
-                    break;
-                case "NOK":
-                    //printAlert.accept( "Ruch niepoprawny!" );
-                    System.out.println( "Ruch NIE poprawny" );
-                    break;
-                case "STOP":
-                    printAlert.accept( "Trwa tura innego gracza..." );
-                    turnActive = false;
-                    break;
-                }
-            }
-
-        } while( !turnActive ); // nasłuchuj dopóki nie nastąpi twoja tura
+        } while( !turnActive );
 
         blockGUI.accept( false );
+    }
+
+    private void waitForResponseAndExecute() throws Exception
+    {
+        String line = communicationManager.readLine();
+
+        Response[] responses = ResponseInterpreter.getResponses( line );
+
+        executeAllResponses( responses );
+    }
+
+    private void executeAllResponses( Response[] responses )
+    {
+        for( Response response : responses )
+        {
+            System.out.println( "Odebrano: " + response.getCode() );
+            executeResponse( response );
+        }
+    }
+
+    private void executeResponse( Response response )
+    {
+        switch( response.getCode() )
+        {
+        case "YOU":
+            printSuccess.accept( "Twoja tura" );
+            turnActive = true;
+            break;
+        case "BOARD":
+            loadBoard( response );
+            break;
+        case "CLUES":
+            loadClues( response );
+            break;
+        case "END":
+            printSuccess.accept( "Koniec meczu. Zajmujesz " + response.getNumbers()[ 0 ] + " miejsce" );
+            turnActive = false;
+            break;
+        case "OK":
+            System.out.println( "Ruch poprawny" );
+            break;
+        case "NOK":
+            //printAlert.accept( "Ruch niepoprawny!" );
+            System.out.println( "Ruch NIE poprawny" );
+            break;
+        case "STOP":
+            printAlert.accept( "Trwa tura innego gracza..." );
+            turnActive = false;
+            break;
+        }
     }
 
     private void askServerForClues( int x, int y )
@@ -186,21 +211,29 @@ public class Player
         communicationManager.writeLine( "CLUES " + x + " " + y );
     }
 
-    private void readColor() throws Exception
+    private void readPlayerColorFromServer() throws Exception
+    {
+        Response welcomeResponse = readWelcomeResponse();
+
+        color = PlayerColor.valueOf( welcomeResponse.getWords()[ 0 ] );
+
+        System.out.println( "Jestem graczem: " + color.toString() );
+    }
+
+    private Response readWelcomeResponse() throws Exception
     {
         String line = communicationManager.readLine();
         Response[] responses = ResponseInterpreter.getResponses( line );
-        Response response;
-        if( responses.length != 1
+
+        boolean incorrectWelcomeMessage = responses.length != 1
                 || !responses[ 0 ].getCode().equals( "WELCOME" )
-                || responses[ 0 ].getWords().length != 1 )
+                || responses[ 0 ].getWords().length != 1;
+        if( incorrectWelcomeMessage )
         {
             throw new Exception( "Otrzymano niepoprawny komunikat: " + line );
         }
 
-        color = PlayerColor.valueOf( responses[ 0 ].getWords()[ 0 ] );
-
-        System.out.println( "Jestem graczem: " + color.toString() );
+        return responses[ 0 ];
     }
 
     private void loadBoard( Response response )
@@ -237,7 +270,7 @@ public class Player
             {
                 System.out.print( n + " " );
             }
-            System.out.println("");
+            System.out.println();
 
             for( int i = 0; i < numbers.length - 1; i += 2 )
             {
