@@ -20,10 +20,11 @@ public class ClassicBot extends Player
     //private ClassicBoard boardCopy;
     private GameMaster gameMaster;
     private Coord target;
-    private int movesIterator = 0;
     private JumpStatusVerifyCondition jumpStatusVerifyCondition;
     private PreviousPawnVerifyCondition previousPawnVerifyCondition;
     private AdditionalVerifyCondition[] verifyConditions;
+    private boolean strayMode = false;
+    private int skipCount;
 
     public ClassicBot(PlayerColor playerColor, GameMaster gameMaster)
     {
@@ -46,22 +47,27 @@ public class ClassicBot extends Player
     @Override
     public String readResponse()
     {
-        if (movesIterator == 0)
+        try
         {
-            try
-            {
-                TimeUnit.MILLISECONDS.sleep(500);
-            } catch (InterruptedException ex)
-            {
-            }
+            TimeUnit.MILLISECONDS.sleep(50);
+        } catch (InterruptedException ex)
+        {
+            throw new RuntimeException();
         }
-        if (moves.get(movesIterator).getValue() > 0)
+        if (bestMove().getValue() > 0)
         {
-            return makeMoveCommand(moves.get(movesIterator));
+            skipCount = 0;
+            return makeMoveCommand(bestMove());
         } else
         {
+            skipCount++;
+            if (skipCount > 1)
+            {
+                activateStrayMode();
+            }
             return "SKIP";
         }
+
     }
 
     /**
@@ -77,10 +83,14 @@ public class ClassicBot extends Player
             {
                 if (gameMaster.getBoard().getField(i, j).getCurrentColor() == color)
                 {
-                    possibleMoves = gameMaster.getPossibleMovesForPos(i, j, verifyConditions);
-                    for (Coord temp : possibleMoves)
+                    if (!strayMode || gameMaster.getBoard().getField(i, j).getTargetColor() != color)
                     {
-                        moves.add(new Move(new Coord(i, j), temp));
+                        previousPawnVerifyCondition.setCurrentXY(i, j);
+                        possibleMoves = gameMaster.getPossibleMovesForPos(i, j, verifyConditions);
+                        for (Coord temp : possibleMoves)
+                        {
+                            moves.add(new Move(new Coord(i, j), temp));
+                        }
                     }
                 }
             }
@@ -100,7 +110,12 @@ public class ClassicBot extends Player
             temp.setValue(prevDistance - currDistance);
         }
         moves.sort(Collections.reverseOrder());
-        movesIterator = 0;
+        updateVerifyConditions(bestMove());
+    }
+
+    Move bestMove()
+    {
+        return moves.get(0);
     }
 
     /**
@@ -126,6 +141,22 @@ public class ClassicBot extends Player
         return stringBuilder.toString();
     }
 
+    void updateVerifyConditions(Move move)
+    {
+        resetVerifyConditions();
+        previousPawnVerifyCondition.setCurrentXY(move.to.getX(), move.to.getY());
+        jumpStatusVerifyCondition.setStatus(gameMaster.verifyMove(move.from.getX(), move.from.getY(), move.to.getX(), move.to.getY(), verifyConditions));
+        previousPawnVerifyCondition.setPreviousXY(move.to.getX(), move.to.getY());
+
+    }
+
+    void resetVerifyConditions()
+    {
+        jumpStatusVerifyCondition.setStatus(0);
+        previousPawnVerifyCondition.setCurrentXY(0, 0);
+        previousPawnVerifyCondition.setPreviousXY(0, 0);
+    }
+
     void executeResponses(Response responses[])
     {
         for (Response response : responses)
@@ -139,6 +170,7 @@ public class ClassicBot extends Player
         switch (response.getCode())
         {
             case "YOU":
+                resetVerifyConditions();
                 listMoves();
                 evaluateMoves();
                 break;
@@ -146,10 +178,30 @@ public class ClassicBot extends Player
                 listMoves();
                 evaluateMoves();
                 break;
-            case "NOK":
-                movesIterator++;
+
         }
     }
+
+    void activateStrayMode()
+    {
+        strayMode = true;
+        setStrayTarget();
+    }
+
+    void setStrayTarget()
+    {
+        for (int i = 1; i <= gameMaster.getBoard().getColumns(); i++)
+        {
+            for (int j = 1; j <= gameMaster.getBoard().getRows(); j++)
+            {
+                if (gameMaster.getBoard().getField(i, j).getTargetColor() == color && gameMaster.getBoard().getField(i, j).getCurrentColor() == PlayerColor.NONE)
+                {
+                    target = new Coord(i, j);
+                }
+            }
+        }
+    }
+
 
     /**
      * Ustawia cel na wierzchołek mety
@@ -178,6 +230,7 @@ public class ClassicBot extends Player
                 break;
         }
     }
+
 
     class Move implements Comparable<Move>
     {
