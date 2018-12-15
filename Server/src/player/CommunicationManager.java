@@ -21,7 +21,7 @@ class CommunicationManager
         }
         catch( Exception e )
         {
-            throw new Exception( "Nie można nawiązać połączenia" );
+            throw new Exception( "Nie można nawiązać połączenia z graczem" );
         }
     }
 
