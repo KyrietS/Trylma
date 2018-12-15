@@ -23,7 +23,7 @@ public abstract class Player
     /**
      * Odczytuje komendę wysłaną przez gracza
      */
-    public abstract String readResponse();
+    public abstract String readResponse() throws Exception;
 
     public PlayerColor getColor()
     {
