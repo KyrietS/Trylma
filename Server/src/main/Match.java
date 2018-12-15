@@ -19,6 +19,8 @@ class Match
     private JumpStatusVerifyCondition jumpStatus;
     private PreviousPawnVerifyCondition previousPawn;
     private AdditionalVerifyCondition[] conditions;
+    private int moveDistance = 0;
+
     private boolean turnFinished;
     private int place;
 
@@ -86,7 +88,7 @@ class Match
         do
         {
             playTurnForPlayer( players.get( indexOfPlayerHavingTurn ) );
-            indexOfPlayerHavingTurn = getNextPlayer( indexOfPlayerHavingTurn );
+            indexOfPlayerHavingTurn = getNextPlayerIndex( indexOfPlayerHavingTurn );
         } while( !allPlayersFinished() );
         System.out.println("Koniec meczu");
     }
@@ -105,7 +107,7 @@ class Match
         previousPawn = new PreviousPawnVerifyCondition();
         conditions = new AdditionalVerifyCondition[]{ jumpStatus, previousPawn };
 
-        turnFinished = true;
+        turnFinished = false;
     }
 
     private void readResponsesAndExecute(Player player) throws Exception
@@ -125,97 +127,152 @@ class Match
         Response[] responses = ResponseInterpreter.getResponses( line );
         if( responses.length != 1 )
         {
-            System.out.println( "Otrzymano nieprawidłowy komunikat od gracza " + player.getColor().toString() );
-            player.sendCommand( "NOK" );
+            System.err.println("Odebrano niepoprawny komunikat od gracza " + player.getColor().toString());
         }
         return responses[0];
     }
 
     private void executeResponse( Player player, Response response ) throws Exception
     {
-        if( response.getCode().equals( "SKIP" ) )
+        String responseType = response.getCode();
+        switch( responseType )
         {
-            player.sendCommand( "STOP" );
+        case "SKIP":
+            sendStopAndFinishTurn( player );
+            break;
+        case "CLUES":
+            executeCluesResponse( player, response );
+            break;
+        case "MOVE":
+            executeMoveResponse( player, response );
+            break;
+        default:
+            sendNokAndPrintIncorrectResponse( player );
+        }
+    }
+
+    private void sendStopAndFinishTurn( Player player ) throws Exception
+    {
+        player.sendCommand( "STOP" );
+        turnFinished = true;
+    }
+
+    private void executeCluesResponse( Player player, Response response ) throws Exception
+    {
+        boolean correctCluesResponse = response.getCode().equals( "CLUES" ) && response.getNumbers().length == 2;
+        if( correctCluesResponse )
+        {
+            int x = response.getNumbers()[ 0 ];
+            int y = response.getNumbers()[ 1 ];
+            sendClues( player, x, y );
+        }
+        else
+        {
+            sendNokAndPrintIncorrectResponse( player );
+        }
+    }
+
+    private void sendClues( Player player, int x, int y ) throws Exception
+    {
+        ((PreviousPawnVerifyCondition)conditions[1]).setCurrentXY( x, y );
+
+        List<Coord> possibleMoves = gameMaster.getPossibleMovesForPos( x, y, conditions );
+        String command = getCluesCommand( possibleMoves );
+
+        player.sendCommand( command );
+    }
+
+    private void executeMoveResponse( Player player, Response response ) throws Exception
+    {
+        boolean correctMoveResponse = response.getCode().equals( "MOVE" ) && response.getNumbers().length == 4;
+        if( correctMoveResponse )
+        {
+            int fromX = response.getNumbers()[ 0 ];
+            int fromY = response.getNumbers()[ 1 ];
+            int toX   = response.getNumbers()[ 2 ];
+            int toY   = response.getNumbers()[ 3 ];
+            verifyMoveAndExecute( player, fromX, fromY, toX, toY );
+        }
+        else
+        {
+            sendNokAndPrintIncorrectResponse( player );
+        }
+    }
+
+    private void verifyMoveAndExecute( Player player, int fromX, int fromY, int toX, int toY ) throws Exception
+    {
+        previousPawn.setCurrentXY( fromX, fromY );
+
+        moveDistance = gameMaster.verifyMove( fromX, fromY, toX, toY, conditions );
+        if( moveDistance == 0 )
+        {
+            System.out.println( "Ruch niepoprawny" );
+            player.sendCommand( "NOK" );
+        }
+        else
+        {
+            makeMove( player, fromX, fromY, toX, toY );
+        }
+    }
+
+    private void makeMove( Player player, int fromX, int fromY, int toX, int toY ) throws Exception
+    {
+        jumpStatus.setStatus( moveDistance );
+        previousPawn.setPreviousXY( toX, toY );
+        gameMaster.makeMove( fromX, fromY, toX, toY );
+        boolean playerFinished = gameMaster.isWinner( player.getColor() );
+
+        if( playerFinished )
+        {
+            makePlayerFinishedAndSendResponses( player );
             turnFinished = true;
         }
-        if( response.getCode().equals( "CLUES" ) )
+        else if( moveDistance == 1 )
         {
-            int x = response.getNumbers()[0];
-            int y = response.getNumbers()[1];
-            sendClues( player, x, y, conditions );
-            turnFinished = false;
+            sendResponsesAfterShortJump( player );
+            turnFinished = true;
         }
-        if( response.getCode().equals( "MOVE" ) )
+        else
         {
-            int x1 = response.getNumbers()[ 0 ];
-            int y1 = response.getNumbers()[ 1 ];
-            int x2 = response.getNumbers()[ 2 ];
-            int y2 = response.getNumbers()[ 3 ];
-            previousPawn.setCurrentXY( x1, y1 );
-
-            // zweryfikuj ruch
-            int result = gameMaster.verifyMove( x1, y1, x2, y2, conditions );
-
-            if( result == 0 ) // ruch niepoprawny
-            {
-                System.out.println( "Ruch niepoprawny" );
-                player.sendCommand( "NOK" );
-                turnFinished = false;
-            }
-            else // ruch poprawny
-            {
-                System.out.println("Ruch poprawny");
-                // aktualizacja conditions
-                jumpStatus.setStatus( result );
-                previousPawn.setPreviousXY( x2, y2 );
-
-                // wykonaj ruch na planszy
-                gameMaster.makeMove( x1, y1, x2, y2 );
-
-                // sprawdź czy gracz zwyciężył
-                boolean winner = gameMaster.isWinner( player.getColor() );
-
-                if( winner ) // gracz wygrał
-                {
-                    System.out.println( "WYGRANA" );
-                    // wyślij komunikat o zwycięstwie
-                    player.sendCommand( "END " + place );
-
-                    // oznacz gracza jako zwycięzcę
-                    player.setFinished( true );
-                    place++;    // następny gracz zajmie kolejne miejsce
-
-                    sendToAll( "BOARD " + gameMaster.getBoardAsString() );
-
-                    turnFinished = true;
-
-                }
-                else if( result == 1 ) // wykonany ruch nie był skokiem (przemieszczenie o 1 pole)
-                {
-                    System.out.println("Wykonano krótki ruch. Koniec tury");
-                    player.sendCommand( "OK@STOP" );
-                    sendToAll( "BOARD " + gameMaster.getBoardAsString() );
-
-                    turnFinished = true;
-                }
-                else // ruch był skokiem, gracz kontynuuje turę
-                {
-                    System.out.println("Wykonano skok nad pionkiem");
-                    // wysyłanie OK@BOARD do aktywnego gracza
-                    CommandBuilder commandBuilder = new CommandBuilder();
-
-                    commandBuilder.addCommand( "OK" );
-                    commandBuilder.addCommand( "BOARD", gameMaster.getBoardAsString() );
-                    player.sendCommand( commandBuilder.getCommand() );
-
-                    // wysyłanie BOARD to reszty graczy (za wyjątkiem activePlayer)
-                    sendToOthers( "BOARD " + gameMaster.getBoardAsString(), player );
-
-                    turnFinished = false;
-                }
-            }
-
+            sendResponsesAfterLongJump( player );
         }
+    }
+
+    private void makePlayerFinishedAndSendResponses( Player player ) throws Exception
+    {
+        System.out.println( "Gracz " + player.getColor().toString() + " zakończył na miejscu " + place );
+        player.sendCommand( "END " + place );
+        player.setFinished( true );
+        place++;
+        sendToAll( "BOARD " + gameMaster.getBoardAsString() );
+    }
+
+    private void sendResponsesAfterShortJump( Player player ) throws Exception
+    {
+        System.out.println("Wykonano krótki ruch. Koniec tury");
+
+        player.sendCommand( "OK@STOP" );
+        sendToAll( "BOARD " + gameMaster.getBoardAsString() );
+    }
+
+    private void sendResponsesAfterLongJump( Player player ) throws Exception
+    {
+        System.out.println("Wykonano skok nad pionkiem");
+
+        // wysyłanie OK@BOARD
+        CommandBuilder commandBuilder = new CommandBuilder();
+        commandBuilder.addCommand( "OK" );
+        commandBuilder.addCommand( "BOARD", gameMaster.getBoardAsString() );
+        player.sendCommand( commandBuilder.getCommand() );
+
+        String msg = "BOARD " + gameMaster.getBoardAsString();
+        sendToAllExceptOne( msg, player );
+    }
+
+    private void sendNokAndPrintIncorrectResponse( Player player ) throws Exception
+    {
+        System.err.println( "Otrzymano nieprawidłowy komunikat od gracza " + player.getColor().toString() );
+        player.sendCommand( "NOK" );
     }
 
     private boolean allPlayersFinished()
@@ -233,7 +290,7 @@ class Match
      * @param activePlayer id gracza, które tura ostatnio trwała
      * @return id kolejnego gracza w kolejne lub -1 gdy wszyscy gracze skończyli mecz
      */
-    private int getNextPlayer( int activePlayer )
+    private int getNextPlayerIndex( int activePlayer )
     {
         int nextPlayer = activePlayer;
         boolean nextPlayerFinished;
@@ -257,7 +314,6 @@ class Match
                 }
                 if( howManyFinished == players.size() )
                 {
-                    //TODO zakończ mecz
                     return -1;
                 }
             }
@@ -281,24 +337,13 @@ class Match
      * Wysyła komendę do wszystkich graczy z tablicy 'players',
      * pomijając gracza 'excluded'
      */
-    private void sendToOthers(String command, Player excluded) throws Exception
+    private void sendToAllExceptOne( String command, Player excluded) throws Exception
     {
         for (Player player : players)
         {
             if (player != excluded)
                 player.sendCommand(command);
         }
-    }
-
-    private void sendClues( Player player, int x, int y, AdditionalVerifyCondition[] conditions ) throws Exception
-    {
-
-        ((PreviousPawnVerifyCondition)conditions[1]).setCurrentXY( x, y );
-
-        List<Coord> possibleMoves = gameMaster.getPossibleMovesForPos( x, y, conditions );
-        String command = getCluesCommand( possibleMoves );
-
-        player.sendCommand( command );
     }
 
     private String getCluesCommand( List<Coord> possibleMoves )
