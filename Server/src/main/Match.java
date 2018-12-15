@@ -1,6 +1,7 @@
 package main;
 
 import movement.*;
+import player.ClassicBot;
 import player.PlayerLeftException;
 import serverboard.ClassicBoardFactory;
 import player.Player;
@@ -31,16 +32,18 @@ class Match
         players = new ArrayList<>();
 
         int numberOfRealPlayers = playerSockets.size();
-        gameMaster.initializeBoard( numberOfRealPlayers );
+
 
         int totalNumberOfPlayers = numberOfRealPlayers + numberOfBots;
+        System.out.print("TOTAL:" + totalNumberOfPlayers);
+        gameMaster.initializeBoard(totalNumberOfPlayers);
         availableColors = gameMaster.getPossibleColorsForPlayers( totalNumberOfPlayers );
 
         turnFinished = true;
         place = 1;
 
         addRealPlayers( playerSockets );
-        //TODO addBotPlayers( numberOfBots )
+        addBotPlayers(numberOfBots, playerSockets.size());
     }
 
     private void addRealPlayers( List<Socket> playerSockets ) throws Exception
@@ -49,7 +52,17 @@ class Match
 
         for( int i = 0; i < numberOfRealPlayers; i++ )
         {
+            System.out.print("Dodano gracz");
             players.add( new RealPlayer( playerSockets.get( i ), availableColors[ i ] ) );
+        }
+    }
+
+    private void addBotPlayers(int numberOfBots, int colorIndex)
+    {
+        for (int i = colorIndex; i < numberOfBots + colorIndex; i++)
+        {
+            System.out.print("Dodano bota");
+            players.add(new ClassicBot(availableColors[i], gameMaster));
         }
     }
 
