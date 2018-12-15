@@ -161,7 +161,6 @@ public class Controller
         try
         {
             createConnection( host, port );
-            board.deselectAndUnmarkAllFields();
             startMatch();
         }
         catch( Exception e )
@@ -185,6 +184,7 @@ public class Controller
     private void createBoard()
     {
         board = new Board( fields );
+        board.deselectAndUnmarkAllFields();
     }
 
     private void createPlayer() throws Exception
