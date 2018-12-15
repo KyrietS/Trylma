@@ -12,6 +12,7 @@ import shared.ResponseInterpreter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ClassicBot extends Player
 {
@@ -45,6 +46,15 @@ public class ClassicBot extends Player
     @Override
     public String readResponse()
     {
+        if (movesIterator == 0)
+        {
+            try
+            {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException ex)
+            {
+            }
+        }
         if (moves.get(movesIterator).getValue() > 0)
         {
             return makeMoveCommand(moves.get(movesIterator));

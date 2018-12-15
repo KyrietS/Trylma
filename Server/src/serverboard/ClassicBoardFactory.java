@@ -50,6 +50,7 @@ public class ClassicBoardFactory implements BoardFactory
                 setOrangePlayer(true);
                 setVioletPlayer(true);
                 setBluePlayer(true);
+                break;
             }
             case 6: //plansza dla 6 graczy
             {
@@ -142,7 +143,7 @@ public class ClassicBoardFactory implements BoardFactory
         board.setField(4, 5, getBlueField(isColorInGame));
         board.setField(1, 6, getBlueField(isColorInGame));
         board.setField(2, 6, getBlueField(isColorInGame));
-        board.setField(2, 6, getBlueField(isColorInGame));
+        board.setField(3, 6, getBlueField(isColorInGame));
         board.setField(2, 7, getBlueField(isColorInGame));
         board.setField(3, 7, getBlueField(isColorInGame));
         board.setField(2, 8, getBlueField(isColorInGame));
