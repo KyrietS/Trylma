@@ -36,7 +36,7 @@ public class ClassicBot extends Player
     }
 
     @Override
-    public void sendCommand(String command) throws Exception
+    public void sendCommand(String command)
     {
         Response[] responses = ResponseInterpreter.getResponses(command);
         executeResponses(responses);

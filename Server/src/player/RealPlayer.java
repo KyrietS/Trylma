@@ -24,8 +24,15 @@ public class RealPlayer extends Player
     }
 
     @Override
-    public String readResponse() throws Exception
+    public String readResponse() throws PlayerLeftException
     {
-        return communicationManager.readLine();
+        try
+        {
+            return communicationManager.readLine();
+        }
+        catch( Exception ignored )
+        {
+            throw new PlayerLeftException( color.toString() );
+        }
     }
 }

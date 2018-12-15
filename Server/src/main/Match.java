@@ -1,6 +1,7 @@
 package main;
 
 import movement.*;
+import player.PlayerLeftException;
 import serverboard.ClassicBoardFactory;
 import player.Player;
 import player.RealPlayer;
@@ -60,13 +61,18 @@ class Match
             sendStartBoardToPlayers();
             play();
         }
-        catch( Exception e)
+        catch( PlayerLeftException e )
         {
-            endMatchWithError( e.getMessage() );
+            endMatchWithError( "Jeden z graczy opuścił grę" );
+        }
+        catch( Exception e )
+        {
+            System.err.println( "Nieoczekiwany błąd: " + e.getMessage() );
+            endMatchWithError( "Wystąpił problem z połączeniem" );
         }
     }
 
-    private void sendWelcomeToPlayers() throws Exception
+    private void sendWelcomeToPlayers()
     {
         for( int i = 0; i < players.size(); i++ )
         {
@@ -74,7 +80,7 @@ class Match
         }
     }
 
-    private void sendStartBoardToPlayers() throws Exception
+    private void sendStartBoardToPlayers()
     {
         CommandBuilder commandBuilder = new CommandBuilder();
         commandBuilder.addCommand( "START" );
@@ -93,7 +99,7 @@ class Match
         System.out.println("Koniec meczu");
     }
 
-    private void playTurnForPlayer( Player player ) throws Exception
+    private void playTurnForPlayer( Player player ) throws PlayerLeftException
     {
         setDefaultSettingsForNewTurn();
         player.sendCommand( "YOU" );
@@ -110,7 +116,7 @@ class Match
         turnFinished = false;
     }
 
-    private void readResponsesAndExecute(Player player) throws Exception
+    private void readResponsesAndExecute(Player player) throws PlayerLeftException
     {
         do
         {
@@ -119,7 +125,7 @@ class Match
         } while( !turnFinished );
     }
 
-    private Response readProperResponseFromPlayer( Player player ) throws Exception
+    private Response readProperResponseFromPlayer( Player player ) throws PlayerLeftException
     {
         System.out.print("Oczekiwanie na odpowiedź od gracza... ");
         String line = player.readResponse();
@@ -132,7 +138,7 @@ class Match
         return responses[0];
     }
 
-    private void executeResponse( Player player, Response response ) throws Exception
+    private void executeResponse( Player player, Response response )
     {
         String responseType = response.getCode();
         switch( responseType )
@@ -151,13 +157,13 @@ class Match
         }
     }
 
-    private void sendStopAndFinishTurn( Player player ) throws Exception
+    private void sendStopAndFinishTurn( Player player )
     {
         player.sendCommand( "STOP" );
         turnFinished = true;
     }
 
-    private void executeCluesResponse( Player player, Response response ) throws Exception
+    private void executeCluesResponse( Player player, Response response )
     {
         boolean correctCluesResponse = response.getCode().equals( "CLUES" ) && response.getNumbers().length == 2;
         if( correctCluesResponse )
@@ -172,7 +178,7 @@ class Match
         }
     }
 
-    private void sendClues( Player player, int x, int y ) throws Exception
+    private void sendClues( Player player, int x, int y )
     {
         ((PreviousPawnVerifyCondition)conditions[1]).setCurrentXY( x, y );
 
@@ -182,7 +188,7 @@ class Match
         player.sendCommand( command );
     }
 
-    private void executeMoveResponse( Player player, Response response ) throws Exception
+    private void executeMoveResponse( Player player, Response response )
     {
         boolean correctMoveResponse = response.getCode().equals( "MOVE" ) && response.getNumbers().length == 4;
         if( correctMoveResponse )
@@ -199,7 +205,7 @@ class Match
         }
     }
 
-    private void verifyMoveAndExecute( Player player, int fromX, int fromY, int toX, int toY ) throws Exception
+    private void verifyMoveAndExecute( Player player, int fromX, int fromY, int toX, int toY )
     {
         previousPawn.setCurrentXY( fromX, fromY );
 
@@ -215,7 +221,7 @@ class Match
         }
     }
 
-    private void makeMove( Player player, int fromX, int fromY, int toX, int toY ) throws Exception
+    private void makeMove( Player player, int fromX, int fromY, int toX, int toY )
     {
         jumpStatus.setStatus( moveDistance );
         previousPawn.setPreviousXY( toX, toY );
@@ -238,7 +244,7 @@ class Match
         }
     }
 
-    private void makePlayerFinishedAndSendResponses( Player player ) throws Exception
+    private void makePlayerFinishedAndSendResponses( Player player )
     {
         System.out.println( "Gracz " + player.getColor().toString() + " zakończył na miejscu " + place );
         player.sendCommand( "END " + place );
@@ -247,7 +253,7 @@ class Match
         sendToAll( "BOARD " + gameMaster.getBoardAsString() );
     }
 
-    private void sendResponsesAfterShortJump( Player player ) throws Exception
+    private void sendResponsesAfterShortJump( Player player )
     {
         System.out.println("Wykonano krótki ruch. Koniec tury");
 
@@ -255,7 +261,7 @@ class Match
         sendToAll( "BOARD " + gameMaster.getBoardAsString() );
     }
 
-    private void sendResponsesAfterLongJump( Player player ) throws Exception
+    private void sendResponsesAfterLongJump( Player player )
     {
         System.out.println("Wykonano skok nad pionkiem");
 
@@ -269,7 +275,7 @@ class Match
         sendToAllExceptOne( msg, player );
     }
 
-    private void sendNokAndPrintIncorrectResponse( Player player ) throws Exception
+    private void sendNokAndPrintIncorrectResponse( Player player )
     {
         System.err.println( "Otrzymano nieprawidłowy komunikat od gracza " + player.getColor().toString() );
         player.sendCommand( "NOK" );
@@ -325,7 +331,7 @@ class Match
     /**
      * Wysyła komendę do wszystkich graczy z tablicy 'players'
      */
-    private void sendToAll(String command) throws Exception
+    private void sendToAll(String command)
     {
         for (Player player : players)
         {
@@ -337,7 +343,7 @@ class Match
      * Wysyła komendę do wszystkich graczy z tablicy 'players',
      * pomijając gracza 'excluded'
      */
-    private void sendToAllExceptOne( String command, Player excluded) throws Exception
+    private void sendToAllExceptOne( String command, Player excluded)
     {
         for (Player player : players)
         {
