@@ -280,8 +280,8 @@ public class Controller
                 alert.showAndWait();
                 return;
             }
-            showAlert( "Podłączanie do serwera..." );
-            Platform.runLater( () -> connectAndStartMatch( host, port ) );
+
+            connectAndStartMatch( host, port );
         }
     }
 }

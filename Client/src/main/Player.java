@@ -37,10 +37,9 @@ class Player
         this.printError = printError;
     }
 
-    void startMatch() throws Exception
+    void startMatch()
     {
         yourTurn = false;
-        readPlayerColorFromServer();
         printSuccess.accept( "Połączono. Oczekiwanie na pozostałych graczy..." );
 
         blockGUIandReadResponses();
@@ -176,6 +175,11 @@ class Player
     {
         switch( response.getCode() )
         {
+        case "WELCOME":
+            executeWelcomeResponse( response );
+            yourTurn = false;
+            printAlert.accept( "Trwa tura innego gracza..." );
+            break;
         case "YOU":
             printSuccess.accept( "Twoja tura" );
             yourTurn = true;
@@ -208,8 +212,7 @@ class Player
 
     private void executeErrorResponse( Response response )
     {
-        String errorMessage = String.join( "", response.getWords() );
-        System.out.println("Otrzymano komunikat ERROR");
+        String errorMessage = String.join( " ", response.getWords() );
         throw new RuntimeException( "Przerwano mecz. " + errorMessage );
     }
 
@@ -218,29 +221,26 @@ class Player
         communicationManager.writeLine( "CLUES " + x + " " + y );
     }
 
-    private void readPlayerColorFromServer() throws Exception
+    private void executeWelcomeResponse( Response response )
     {
-        Response welcomeResponse = readWelcomeResponse();
+        boolean incorrectWelcomeMessage =
+                   !response.getCode().equals( "WELCOME" )
+                || response.getWords().length != 1;
+
+        if( incorrectWelcomeMessage )
+        {
+            System.err.println( "Otrzymano niepoprawny komunikat." );
+        }
+
+        readPlayerColorFromResponse( response );
+    }
+
+    private void readPlayerColorFromResponse( Response welcomeResponse )
+    {
 
         color = PlayerColor.valueOf( welcomeResponse.getWords()[ 0 ] );
 
         System.out.println( "Jestem graczem: " + color.toString() );
-    }
-
-    private Response readWelcomeResponse() throws Exception
-    {
-        String line = communicationManager.readLine();
-        Response[] responses = ResponseInterpreter.getResponses( line );
-
-        boolean incorrectWelcomeMessage = responses.length != 1
-                || !responses[ 0 ].getCode().equals( "WELCOME" )
-                || responses[ 0 ].getWords().length != 1;
-        if( incorrectWelcomeMessage )
-        {
-            throw new Exception( "Otrzymano niepoprawny komunikat: " + line );
-        }
-
-        return responses[ 0 ];
     }
 
     private void loadBoard( Response response )
