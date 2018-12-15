@@ -3,7 +3,9 @@ package main;
 import board.Board;
 import javafx.application.Platform;
 import shared.Coord;
-import shared.*;
+import shared.PlayerColor;
+import shared.Response;
+import shared.ResponseInterpreter;
 
 import java.util.function.Consumer;
 
@@ -200,9 +202,15 @@ class Player
             yourTurn = false;
             break;
         case "ERROR":
-            System.out.println("Otrzymano komunikat ERROR");
-            printError.accept( "Przerwano mecz" );
+            executeErrorResponse( response );
         }
+    }
+
+    private void executeErrorResponse( Response response )
+    {
+        String errorMessage = String.join( "", response.getWords() );
+        System.out.println("Otrzymano komunikat ERROR");
+        throw new RuntimeException( "Przerwano mecz. " + errorMessage );
     }
 
     private void askServerForClues( int x, int y )
