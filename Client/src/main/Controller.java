@@ -30,7 +30,7 @@ public class Controller
     private CommunicationManager communicationManager;
     private Board board;
     private Player player;
-    private boolean guiBlocked = false;
+    private boolean guiBlocked = true;
 
     /**
      * Funkcja uruchamiana przy starcie aplikacji
