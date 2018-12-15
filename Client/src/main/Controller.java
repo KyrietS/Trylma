@@ -161,6 +161,7 @@ public class Controller
         try
         {
             createConnection( host, port );
+            board.deselectAndUnmarkAllFields();
             startMatch();
         }
         catch( Exception e )
