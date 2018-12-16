@@ -4,16 +4,21 @@ import board.Board;
 import board.Field;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -126,6 +131,31 @@ public class Controller
         if (result.isPresent() && result.get() == ButtonType.OK){
             Platform.exit();
         }
+    }
+
+    @FXML
+    private void onHelp() throws IOException
+    {
+        AnchorPane pane = FXMLLoader.load( getClass().getResource( "instruction.fxml" ) );
+        Stage stage = new Stage();
+        stage.setScene(new Scene(pane));
+        stage.setResizable( false );
+        stage.showAndWait();
+    }
+
+    @FXML
+    private void onAbout()
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("O programie");
+        alert.setHeaderText("Informacje o programie Trylma");
+        String s = "Program powstał w ramach kursu\n"
+                    + "Technologia Programowania\n"
+                    + "na Politechnice Wrocławskiej\n\n"
+                    + "Autorzy: Sebastian Fojcik & Maciej Król";
+        alert.setContentText(s);
+
+        alert.showAndWait();
     }
 
     private void showError( String text )

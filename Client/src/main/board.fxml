@@ -17,7 +17,8 @@
             <MenuItem mnemonicParsing="false" onAction="#onExit" text="Zakończ" />
         </Menu>
         <Menu mnemonicParsing="false" text="Pomoc">
-            <MenuItem mnemonicParsing="false" text="O programie" />
+            <MenuItem mnemonicParsing="false" onAction="#onHelp" text="Jak grać" />
+         <MenuItem mnemonicParsing="false" onAction="#onAbout" text="O programie" />
         </Menu>
     </MenuBar>
    <Label fx:id="infoBar" maxWidth="1.7976931348623157E308" prefHeight="18.0" prefWidth="800.0" style="-fx-background-color: orange; -fx-alignment: center;" text="Nawiąż połączenie z serwerem" textAlignment="CENTER" textFill="WHITE" />
