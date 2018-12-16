@@ -49,7 +49,7 @@ public class ClassicBot extends Player
     {
         try
         {
-            TimeUnit.MILLISECONDS.sleep(50);
+            TimeUnit.MILLISECONDS.sleep(500);
         } catch (InterruptedException ex)
         {
             throw new RuntimeException();
