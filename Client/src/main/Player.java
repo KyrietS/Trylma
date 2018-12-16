@@ -178,10 +178,10 @@ class Player
         case "WELCOME":
             executeWelcomeResponse( response );
             yourTurn = false;
-            printAlert.accept( "Trwa tura innego gracza..." );
+            printAlert.accept( "Grasz jako: " + color.toString() + ". Trwa tura innego gracza..." );
             break;
         case "YOU":
-            printSuccess.accept( "Twoja tura" );
+            printSuccess.accept( "("+color.toString()+") Twoja tura" );
             yourTurn = true;
             break;
         case "BOARD":
