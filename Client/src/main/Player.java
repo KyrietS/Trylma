@@ -188,10 +188,10 @@ class Player
             yourTurn = true;
             break;
         case "BOARD":
-            loadBoard( response );
+            Platform.runLater( () -> loadBoard( response ) );
             break;
         case "CLUES":
-            loadClues( response );
+            Platform.runLater( () -> loadClues( response ) );
             break;
         case "END":
             printSuccess.accept( "Koniec meczu. Zajmujesz " + response.getNumbers()[ 0 ] + " miejsce" );
@@ -272,7 +272,7 @@ class Player
     {
         if( response.getCode().equals( "CLUES" ) )
         {
-            Platform.runLater( () -> board.unmarkAllPossibleJumpTargets() );
+            board.unmarkAllPossibleJumpTargets();
 
             int numbers[] = response.getNumbers();
 
@@ -285,10 +285,9 @@ class Player
 
             for( int i = 0; i < numbers.length - 1; i += 2 )
             {
-
                 int x = numbers[ i ];
                 int y = numbers[ i+1 ];
-                Platform.runLater( () -> board.markFieldAsPossibleJumpTarget( x, y ) );
+                board.markFieldAsPossibleJumpTarget( x, y );
             }
         }
     }

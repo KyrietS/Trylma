@@ -1,6 +1,5 @@
 package board;
 
-import javafx.application.Platform;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
@@ -79,7 +78,7 @@ public class Field
         RadialGradient gradient = new RadialGradient( 0, 0,
                 0.5, 0.5, 0.5, true, CycleMethod.NO_CYCLE, gradientStops );
 
-        Platform.runLater( () -> circle.setFill( gradient ) );
+        circle.setFill( gradient );
     }
     
     PlayerColor getColor()
@@ -97,7 +96,7 @@ public class Field
             else
                 strokeType = StrokeType.INSIDE;
 
-            Platform.runLater( () -> circle.setStrokeType( strokeType ) );
+            circle.setStrokeType( strokeType );
         }
 
     }
@@ -117,7 +116,7 @@ public class Field
             else
                 fillColor = Color.WHITE;
 
-            Platform.runLater( () -> circle.setFill( fillColor ) );
+            circle.setFill( fillColor );
         }
     }
 
