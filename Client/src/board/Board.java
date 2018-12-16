@@ -82,7 +82,7 @@ public class Board
     {
         Field field = getField( x, y );
         if( field != null )
-            Platform.runLater( () -> field.setColor( color ) );
+            field.setColor( color );
     }
 
     public boolean isFieldEmpty( int x, int y )
