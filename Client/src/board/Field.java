@@ -1,5 +1,6 @@
 package board;
 
+import javafx.application.Platform;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
@@ -77,7 +78,8 @@ public class Field
     {
         RadialGradient gradient = new RadialGradient( 0, 0,
                 0.5, 0.5, 0.5, true, CycleMethod.NO_CYCLE, gradientStops );
-        circle.setFill( gradient );
+
+        Platform.runLater( () -> circle.setFill( gradient ) );
     }
     
     PlayerColor getColor()
@@ -87,13 +89,17 @@ public class Field
 
     void setSelected( boolean state )
     {
+        StrokeType strokeType;
         if( !circle.isDisabled() )
         {
             if( state )
-                circle.setStrokeType( StrokeType.OUTSIDE ); // lekko powiększa kółko
+                strokeType = StrokeType.OUTSIDE; // lekko powiększa kółko
             else
-                circle.setStrokeType( StrokeType.INSIDE );
+                strokeType = StrokeType.INSIDE;
+
+            Platform.runLater( () -> circle.setStrokeType( strokeType ) );
         }
+
     }
 
     public boolean circleEquals( Circle circle )
@@ -103,12 +109,15 @@ public class Field
 
     void markAsPossibleJumpTarget( boolean state )
     {
-        if( !circle.isDisabled() )
+        if( !circle.isDisabled() && color == PlayerColor.NONE )
         {
-            if( state && color == PlayerColor.NONE )
-                circle.setFill( Paint.valueOf( "#47F2FF" ) );
-            else if( color == PlayerColor.NONE )
-                circle.setFill( Color.WHITE );
+            Paint fillColor;
+            if( state )
+                fillColor = Paint.valueOf( "#47F2FF" );
+            else
+                fillColor = Color.WHITE;
+
+            Platform.runLater( () -> circle.setFill( fillColor ) );
         }
     }
 
