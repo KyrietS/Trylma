@@ -20,6 +20,7 @@ class Player
     private Consumer<String> printError;
 
     private boolean yourTurn;
+    private boolean finished;
 
     Player( CommunicationManager cm, Board board,
             Consumer<Boolean> blockGUI,
@@ -40,6 +41,7 @@ class Player
     void startMatch()
     {
         yourTurn = false;
+        finished = false;
         printSuccess.accept( "Połączono. Oczekiwanie na pozostałych graczy..." );
 
         blockGUIandReadResponses();
@@ -120,7 +122,7 @@ class Player
     }
 
     /**
-     * Wysyoła do serwera komunikat o zakończeniu tury
+     * Wysyła do serwera komunikat o zakończeniu tury
      */
     private void sendSkipRequest()
     {
@@ -145,7 +147,8 @@ class Player
             }
             catch( Exception e ) // utracono połączenie z serwerem
             {
-                printError.accept( e.getMessage() );
+                if( !finished )
+                    printError.accept( e.getMessage() );
                 return;
             }
         } while( !yourTurn );
@@ -193,6 +196,7 @@ class Player
         case "END":
             printSuccess.accept( "Koniec meczu. Zajmujesz " + response.getNumbers()[ 0 ] + " miejsce" );
             yourTurn = false;
+            finished = true;
             break;
         case "OK":
             System.out.println( "Ruch poprawny" );
