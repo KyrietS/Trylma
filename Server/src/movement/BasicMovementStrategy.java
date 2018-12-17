@@ -33,18 +33,16 @@ public class BasicMovementStrategy implements MovementStrategy
         //zmienne pomocnicze
         int dx = x2 - x1;
         int dy = y2 - y1;
-        //jeżeli któreś z pól jest nullem lub wypełniaczem to ruch na pewno nie jest prawidłowy
-        if (board.getField(x1, y1) == null || board.getField(x2, y2) == null || !board.getField(x1, y1).isPlayable() || !board.getField(x2, y2).isPlayable())
+
+        if (fieldsNotPlayable(board, x1, y1, x2, y2))
         {
             return 0;
         }
-        //pole z którego ruszamy musi zawierać pionek i pole do którego idziemy musi być puste
-        if (!board.getField(x2, y2).getCurrentColor().equals( NONE ) || board.getField(x1, y1).getCurrentColor().equals(NONE))
+        if (isWrongPawnState(board, x1, y1, x2, y2))
         {
             return 0;
         }
-        //Jeżeli wykonaliśmy juz skok (status==2) to musimy ruszyć tym samym pionkiem co poprzednio
-        if (!additionalVerifyConditions[0].verify() && additionalVerifyConditions[1].verify())
+        if (isNotPreviousPawn(additionalVerifyConditions))
         {
             return 0;
         }
@@ -157,6 +155,30 @@ public class BasicMovementStrategy implements MovementStrategy
             return 0;
         }
         }
+    }
+
+    /**
+     * zwraca true jeżeli któreś z pól jest nullem lub wypełniaczem
+     */
+    private boolean fieldsNotPlayable(Board board, int x1, int y1, int x2, int y2)
+    {
+        return board.getField(x1, y1) == null || board.getField(x2, y2) == null || !board.getField(x1, y1).isPlayable() || !board.getField(x2, y2).isPlayable();
+    }
+
+    /**
+     * Zwraca true gdy próbujemy ruszyć z pustego pola lub na zajęte pole
+     */
+    private boolean isWrongPawnState(Board board, int x1, int y1, int x2, int y2)
+    {
+        return !board.getField(x2, y2).getCurrentColor().equals(NONE) || board.getField(x1, y1).getCurrentColor().equals(NONE);
+    }
+
+    /**
+     * Zwraca true gdy po wykonaniu skoku próbujemy wykonać ruch innym pionkiem
+     */
+    private boolean isNotPreviousPawn(AdditionalVerifyCondition[] additionalVerifyConditions)
+    {
+        return !additionalVerifyConditions[0].verify() && additionalVerifyConditions[1].verify();
     }
 
     /**
