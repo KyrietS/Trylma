@@ -1,5 +1,7 @@
 package shared;
 
+import java.util.Objects;
+
 /**
  * Klasa pomocnicza do przechowywania współrzędnych
  */
@@ -23,4 +25,21 @@ public class Coord
         return y;
     }
 
+    @Override
+    public boolean equals( Object o )
+    {
+        if( o instanceof Coord )
+        {
+            Coord c = (Coord)o;
+            return x == c.x && y == c.y;
+        }
+        else
+            return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash( x, y );
+    }
 }

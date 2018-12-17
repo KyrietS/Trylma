@@ -1,6 +1,5 @@
 package board;
 
-import javafx.application.Platform;
 import shared.Coord;
 import shared.PlayerColor;
 
