@@ -81,6 +81,7 @@ class Match
         catch( Exception e )
         {
             System.err.println( "Nieoczekiwany błąd: " + e.getMessage() );
+            e.printStackTrace();
             endMatchWithError( "Wystąpił problem z połączeniem" );
         }
     }
