@@ -90,7 +90,7 @@ class BasicMovementStrategyTest
         //pola do blędnych krótkich ruchów
         board.setField(2, 2, new Field(PlayerColor.BLUE, null, null, true));
         board.setField(2, 3, new Field(PlayerColor.RED, null, null, true));
-        board.setField(3, 2, new Field(false));
+        board.setField(3, 2, new Field());
         board.setField(4, 4, new Field(PlayerColor.NONE, null, null, true));
 
         //pola do poprawnych ruchów przeskakujących:
