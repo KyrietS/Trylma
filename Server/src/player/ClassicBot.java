@@ -17,13 +17,12 @@ import java.util.concurrent.TimeUnit;
 public class ClassicBot extends Player
 {
     List<Move> moves;
-    //private ClassicBoard boardCopy;
     private GameMaster gameMaster;
     private Coord target;
     private JumpStatusVerifyCondition jumpStatusVerifyCondition;
     private PreviousPawnVerifyCondition previousPawnVerifyCondition;
     private AdditionalVerifyCondition[] verifyConditions;
-    private boolean strayMode = false;
+    boolean strayMode = false;
     private int skipCount;
 
     public ClassicBot(PlayerColor playerColor, GameMaster gameMaster)
@@ -119,7 +118,7 @@ public class ClassicBot extends Player
 
     Move bestMove()
     {
-        return moves.get(0);
+        return moves.size() != 0 ? moves.get(0) : null;
     }
 
     /**
@@ -236,7 +235,7 @@ public class ClassicBot extends Player
     }
 
 
-    class Move implements Comparable<Move>
+    static class Move implements Comparable<Move>
     {
         Coord from, to;
         Double value;
