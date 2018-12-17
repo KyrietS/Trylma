@@ -21,10 +21,7 @@ public class Field
     private PlayerColor targetColor;
     private boolean playable;
 
-    public Field(boolean playable)
-    {
-
-    }
+    public Field(){}
 
     public Field(PlayerColor currentColor, PlayerColor nativeColor, PlayerColor targetColor, boolean playable)
     {
@@ -44,7 +41,7 @@ public class Field
         this.currentColor = currentColor;
     }
 
-    public PlayerColor getNativeColor()
+    PlayerColor getNativeColor()
     {
         return nativeColor;
     }
