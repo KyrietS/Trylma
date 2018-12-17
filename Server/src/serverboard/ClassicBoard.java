@@ -17,7 +17,7 @@ public class ClassicBoard extends Board
         {
             for (int j = 1; j <= rows; j++)
             {
-                setField(i, j, new Field(false));
+                setField(i, j, new Field());
             }
         }
     }
