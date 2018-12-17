@@ -3,7 +3,7 @@ package serverboard;
 import shared.PlayerColor;
 
 /**
- * Klasa fabryka odpowiedzalna za tworzenie obiektów klasy ClassicBoard
+ * Klasa fabryka odpowiedzialna za tworzenie obiektów klasy ClassicBoard
  */
 public class ClassicBoardFactory implements BoardFactory
 {

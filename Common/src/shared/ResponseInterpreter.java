@@ -22,7 +22,7 @@ public class ResponseInterpreter
             // Rozdzielanie komunikatu względem spacji
             String[] parts = strResponse.split(" ");
 
-            // Komunikat powinien zawierać conajmniej jeden element
+            // Komunikat powinien zawierać co najmniej jeden element
             if( parts.length < 1 )
                 throw new RuntimeException( "Otrzymano niepoprawną odpowiedź od serwera: '" + line + "'" );
 
