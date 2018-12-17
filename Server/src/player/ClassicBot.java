@@ -54,11 +54,7 @@ public class ClassicBot extends Player
         {
             throw new RuntimeException();
         }
-        if (bestMove().getValue() > 0)
-        {
-            skipCount = 0;
-            return makeMoveCommand(bestMove());
-        } else
+        if (moves.size() == 0 || bestMove().getValue() < 0)
         {
             skipCount++;
             if (skipCount > 1)
@@ -66,6 +62,10 @@ public class ClassicBot extends Player
                 activateStrayMode();
             }
             return "SKIP";
+        } else
+        {
+            skipCount = 0;
+            return makeMoveCommand(bestMove());
         }
 
     }
@@ -102,6 +102,10 @@ public class ClassicBot extends Player
      */
     void evaluateMoves()
     {
+        if (moves.size() == 0)
+        {
+            return;
+        }
         Double prevDistance, currDistance;
         for (Move temp : moves)
         {
