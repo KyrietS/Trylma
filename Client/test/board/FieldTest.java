@@ -1,6 +1,5 @@
 package board;
 
-import board.Field;
 import javafx.scene.shape.Circle;
 import org.junit.jupiter.api.Test;
 import shared.PlayerColor;
@@ -48,7 +47,6 @@ class FieldTest
 
         assertTrue( field.circleEquals( c1 ) );
     }
-
 
 
     private Field createDummyField()
