@@ -2,6 +2,7 @@ package board;
 
 import javafx.scene.shape.Circle;
 import org.junit.jupiter.api.Test;
+import shared.Coord;
 import shared.PlayerColor;
 
 import java.util.ArrayList;
@@ -28,6 +29,15 @@ class BoardTest
     }
 
     @Test
+    void addPiece()
+    {
+        Board board = createDummyBoard();
+
+        board.addPiece( 0, 1, PlayerColor.BLUE );
+        assertFalse( board.isFieldEmpty( 0, 1 ) );
+    }
+
+    @Test
     void getColor_notExistingField()
     {
         Board board = createDummyBoard();
@@ -41,6 +51,21 @@ class BoardTest
         Board board = createDummyBoard();
 
         assertEquals( PlayerColor.NONE, board.getColor( 1, 1 ) );
+
+        board.addPiece( 1, 1, PlayerColor.ORANGE );
+        assertEquals( PlayerColor.ORANGE, board.getColor( 1, 1 ) );
+    }
+
+    @Test
+    void removeAllPieces()
+    {
+        Board board = createDummyBoard();
+        board.addPiece( 0, 0, PlayerColor.GREEN );
+        board.addPiece( 1, 1, PlayerColor.VIOLET );
+
+        board.removeAllPieces();
+        assertTrue( board.isFieldEmpty( 0, 0 ) );
+        assertTrue( board.isFieldEmpty( 1, 1 ) );
     }
 
     @Test
@@ -53,6 +78,30 @@ class BoardTest
     }
 
     @Test
+    void getCoordOfSelectedField()
+    {
+        Board board = createDummyBoard();
+
+        assertNull( board.getCoordOfSelectedField() );
+
+        board.selectField( 0, 0 );
+        board.selectField( 1, 1 );
+        assertEquals( new Coord( 1, 1 ), board.getCoordOfSelectedField() );
+    }
+
+    @Test
+    void deselectAllFields()
+    {
+        Board board = createDummyBoard();
+
+        assertNull( board.getCoordOfSelectedField() );
+
+        board.selectField( 1, 1 );
+        board.deselectAndUnmarkAllFields();
+        assertNull( board.getCoordOfSelectedField() );
+    }
+
+    @Test
     void mark_notExistingField()
     {
         Board board = createDummyBoard();
@@ -60,6 +109,8 @@ class BoardTest
         // Podświetlenie nieistniejącego pola powinno nie rzucić wyjątku
         board.markFieldAsPossibleJumpTarget( -1, -1 );
     }
+
+
 
     private Board createDummyBoard()
     {
@@ -72,9 +123,7 @@ class BoardTest
         fields.add( new Field( 1, 1, new Circle() ) );
         fields.add( new Field( 1, 2, new Circle() ) );
 
-        Board board = new Board( fields );
-
-        return board;
+        return new Board( fields );
     }
 
 }
