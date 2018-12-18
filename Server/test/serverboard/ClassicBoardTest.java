@@ -1,6 +1,7 @@
 package serverboard;
 
 import org.junit.jupiter.api.Test;
+import player.ClassicBot;
 import serverboard.ClassicBoard;
 import serverboard.Field;
 import serverboard.UnplayableFieldException;
@@ -23,9 +24,12 @@ class ClassicBoardTest
     }
 
     @Test
-    void addingToUnplayableFieldException()
+    void throwUnplayableFieldException()
     {
-
+        ClassicBoard classicBoard = new ClassicBoard();
+        assertThrows(UnplayableFieldException.class, () -> classicBoard.addPiece(1, 1, PlayerColor.BLUE));
+        assertThrows(UnplayableFieldException.class, () -> classicBoard.removePiece(1, 1));
+        assertThrows(UnplayableFieldException.class, () -> classicBoard.getColor(1, 1));
     }
 
     @Test
