@@ -53,7 +53,7 @@ public class ClassicBot extends Player
         {
             throw new RuntimeException();
         }
-        if (moves.size() == 0 || bestMove().getValue() < 0)
+        if (moves.size() == 0 || bestMove().getValue() <= 0)
         {
             skipCount++;
             if (skipCount > 1)
